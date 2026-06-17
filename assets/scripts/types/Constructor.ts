@@ -1,0 +1,1 @@
+export type ComponentConstructor<T extends cc.Component> = new (...args: any[]) => T;
