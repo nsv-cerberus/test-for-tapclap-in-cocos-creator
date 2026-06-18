@@ -6,14 +6,13 @@ export default class ValidationHelper {
         prefab: cc.Prefab,
         componentType: ComponentConstructor<T>
     ): boolean {
-
         if (!prefab) {
             cc.error("Prefab is not assigned");
             return false;
         }
 
         if (!prefab.data.getComponent(componentType as any)) {
-            cc.error(
+            cc.warn(
                 `Prefab "${prefab.name}" must contain "${componentType.name}" component`
             );
             return false;

@@ -1,18 +1,33 @@
 const {ccclass, property} = cc._decorator;
 
+export enum TileType {
+    Red,
+    Green,
+    Blue,
+    Yellow,
+    Purple,
+}
+
 @ccclass
 export default class Tile extends cc.Component {
 
-    @property
-    text: string = 'hello';
+    _type: TileType = TileType.Blue;
 
-    // LIFE-CYCLE CALLBACKS:
-
-    // onLoad () {}
-
-    start () {
-
+    onLoad () {
+        this.defineRandomeType();
     }
 
-    // update (dt) {}
+    defineRandomeType(): void {
+        const randomIndex = Math.floor(Math.random() * Object.keys(TileType).length / 2);
+        this.type = randomIndex;
+    }
+
+    public get type(): TileType {
+        return this._type;
+    }
+
+    set type(value: TileType) {
+        this._type = value;
+    }
+    
 }
