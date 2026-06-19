@@ -1,5 +1,5 @@
 import ICellsMatrix from "./ICellsMatrix";
-import Cell from "../../../../scripts/level/grid/cells/Cell";
+import Cell from "../../../../scripts/level/grid/Cell";
 
 export default class CellsMatrix implements ICellsMatrix {
     private matrix: Cell[][] = null;
@@ -16,7 +16,11 @@ export default class CellsMatrix implements ICellsMatrix {
         return this.matrix;
     }
 
-    public setMatrix(matrix: Cell[][]): void {
-        this.matrix = matrix;
+    public setCell(row: number, col: number, cell: Cell): void {
+        if (this.matrix && this.matrix[row] && this.matrix[row][col]) {
+            this.matrix[row][col] = cell;
+        } else {
+            throw new Error(`Cannot set cell at position (${row}, ${col}).`);
+        }
     }
 }

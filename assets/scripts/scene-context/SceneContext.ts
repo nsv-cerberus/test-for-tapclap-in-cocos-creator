@@ -1,15 +1,13 @@
-import CellsController from "./cells-controller/CellsController";
+import IService from "./IService";
 
 export type ServiceToken<T> = { new(...args: any[]): T };
 
 export default class SceneContext {
+
     private static services = new Map<ServiceToken<any>, any>();
 
-    constructor(cellsController: CellsController) {
-        SceneContext.register(CellsController, cellsController);
-    }
-
-    private static register<T>(token: ServiceToken<T>, instance: T): void {
+    public static register<T extends IService>(instance: T): void {
+        const token = instance.constructor as ServiceToken<T>;
         this.services.set(token, instance);
     }
 
@@ -26,4 +24,5 @@ export default class SceneContext {
     public static clear(): void {
         this.services.clear();
     }
+
 }

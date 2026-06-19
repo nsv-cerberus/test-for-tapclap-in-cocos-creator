@@ -11,23 +11,71 @@ export enum TileType {
 @ccclass
 export default class Tile extends cc.Component {
 
-    _type: TileType = TileType.Blue;
+    private type: TileType = TileType.Blue;
 
-    onLoad () {
-        this.defineRandomeType();
+    @property(cc.Sprite)
+    private blue: cc.Sprite = null;
+
+    @property(cc.Sprite)
+    private red: cc.Sprite = null;
+
+    @property(cc.Sprite)
+    private green: cc.Sprite = null;
+
+    @property(cc.Sprite)
+    private yellow: cc.Sprite = null;
+
+    @property(cc.Sprite)
+    private purple: cc.Sprite = null;
+
+    public setType(type: TileType): void {
+        this.type = type;
+        this.defineSpriteByType();
     }
 
-    defineRandomeType(): void {
-        const randomIndex = Math.floor(Math.random() * Object.keys(TileType).length / 2);
-        this.type = randomIndex;
+    private defineSpriteByType(): void {
+        this.disableAllSprites();
+
+        switch (this.type) {
+            case TileType.Blue:
+                this.enableSprite(this.blue);
+                break;
+            case TileType.Red:
+                this.enableSprite(this.red);
+                break;
+            case TileType.Green:
+                this.enableSprite(this.green);
+                break;
+            case TileType.Yellow:
+                this.enableSprite(this.yellow);
+                break;
+            case TileType.Purple:
+                this.enableSprite(this.purple);
+                break;
+            default:
+                cc.warn("Tile: Unknown type");
+                break;
+        }
     }
 
-    public get type(): TileType {
-        return this._type;
+    private disableAllSprites(): void {
+        this.disableSprite(this.blue);
+        this.disableSprite(this.red);
+        this.disableSprite(this.green);
+        this.disableSprite(this.yellow);
+        this.disableSprite(this.purple);
     }
 
-    set type(value: TileType) {
-        this._type = value;
+    private enableSprite(sprite: cc.Sprite): void {
+        sprite.node.active = true;
+    }
+
+    private disableSprite(sprite: cc.Sprite): void {
+        sprite.node.active = false;
+    }
+
+    public getType(): TileType {
+        return this.type;
     }
     
 }
