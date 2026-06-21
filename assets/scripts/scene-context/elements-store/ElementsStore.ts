@@ -1,9 +1,9 @@
-const {ccclass, property} = cc._decorator;
+const {ccclass, property, menu} = cc._decorator;
 
 import IService from "../IService";
-import Tile from "../../level/grid/Tile";
 
 @ccclass
+@menu("Level/Scene Context/Elements Store")
 export default class ElementsStore extends cc.Component implements IService {
 
     @property(cc.Prefab)

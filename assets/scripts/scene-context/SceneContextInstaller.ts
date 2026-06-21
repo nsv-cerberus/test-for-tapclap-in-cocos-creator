@@ -5,29 +5,36 @@ import SceneContext from "./SceneContext";
 /* ELEMENTS STORE */
 import ElementsStore from "./elements-store/ElementsStore";
 
-/* GRID CONTROLLER */
+/* GAMEPLAY CONTROLLER */
 import LevelSettings from "./level-settings/LevelSettings";
-import GridController from "./grid-controller/GridController";
-import CellsMatrix from "./grid-controller/cells-matrix/CellsMatrix";
+import CellsMatrix from "./gameplay-controller/cells-matrix/CellsMatrix";
+
+import GameplayController from "./gameplay-controller/GameplayController";
 
 @ccclass
 @executionOrder(-1000)
 export class SceneContextInstaller extends cc.Component {
+    @property(ElementsStore)
+    elementsStore: ElementsStore = null;
+    
     @property(LevelSettings)
     levelSettings: LevelSettings = null;
 
-    @property(ElementsStore)
-    elementsStore: ElementsStore = null;
-
-    @property(GridController)
-    gridController: GridController = null;
+    @property(GameplayController)
+    gameplayController: GameplayController = null;
     
     onLoad() {
-        this.gridController.init(new CellsMatrix());
-
-        SceneContext.register(this.levelSettings);
+        
         SceneContext.register(this.elementsStore);
-        SceneContext.register(this.gridController);
+        SceneContext.register(this.levelSettings);
+        SceneContext.register(this.gameplayController);
+        
+        this.gameplayController.init(
+            new CellsMatrix(
+                SceneContext.get(LevelSettings).getRowsValue(), 
+                SceneContext.get(LevelSettings).getColsValue()
+            )
+        );
     }
 
     onDestroy() {

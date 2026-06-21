@@ -1,23 +1,29 @@
 const {ccclass, property, menu} = cc._decorator;
 
+type LevelSettingsValue = {
+    cols: number;
+    rows: number;
+    cellSize: cc.Size;
+    spaceBetweenCells: number;
+};
+
 @ccclass
-@menu("Level/Scene Context/LevelSettings")
+@menu("Level/Scene Context/Level Settings")
 export default class LevelSettings extends cc.Component {
 
     @property({
         type: cc.Integer,
         min: 2,
+        max: 9,
     })
     private cols: number = 2;
 
     @property({
         type: cc.Integer,
         min: 2,
+        max: 11,
     })
     private rows: number = 2;
-
-    @property
-    private cellSize: cc.Size = cc.size(100, 112);
 
     @property({
         type: cc.Integer,
@@ -26,20 +32,23 @@ export default class LevelSettings extends cc.Component {
     })
     private spaceBetweenCells: number = 0;
 
-    public get colsValue(): number {
+    public getColsValue(): number {
         return this.cols;
     }
 
-    public get rowsValue(): number {
+    public getRowsValue(): number {
         return this.rows;
     }
 
-    public get cellSizeValue(): cc.Size {
-        return this.cellSize;
+    public getSpaceBetweenCellsValue(): number {
+        return this.spaceBetweenCells;
     }
 
-    public get spaceBetweenCellsValue(): number {
-        return this.spaceBetweenCells;
+    // Нужно для того, если будет загрузчик данных из json или другого источника, к которому будет обращаться LevelSettings
+    private setSettingsValue(value: LevelSettingsValue): void {
+        this.cols = value.cols;
+        this.rows = value.rows;
+        this.spaceBetweenCells = value.spaceBetweenCells;
     }
 
 }
