@@ -28,10 +28,13 @@
       },
       {
         "__id__": 7
+      },
+      {
+        "__id__": 8
       }
     ],
     "_prefab": {
-      "__id__": 8
+      "__id__": 9
     },
     "_opacity": 255,
     "_color": {
@@ -261,7 +264,7 @@
     },
     "component": "",
     "_componentId": "9cf1e5pc9hCh46zkuy/70in",
-    "handler": "",
+    "handler": "click",
     "customEventData": ""
   },
   {
@@ -274,6 +277,19 @@
     "_enabled": true,
     "container": {
       "__id__": 2
+    },
+    "_id": ""
+  },
+  {
+    "__type__": "beb5bYp705IT5Ax02/VBojH",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "cell": {
+      "__id__": 7
     },
     "_id": ""
   },

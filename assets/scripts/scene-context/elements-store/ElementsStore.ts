@@ -3,7 +3,7 @@ const {ccclass, property, menu} = cc._decorator;
 import IService from "../IService";
 
 @ccclass
-@menu("Level/Scene Context/Elements Store")
+@menu("Level/Scene Context Installer/Elements Store")
 export default class ElementsStore extends cc.Component implements IService {
 
     @property(cc.Prefab)

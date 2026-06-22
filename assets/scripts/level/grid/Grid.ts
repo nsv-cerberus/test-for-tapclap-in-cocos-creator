@@ -31,6 +31,8 @@ export default class Grid extends cc.Component {
                 cellNode.parent = this.node;
                 cellNode.x = col * (cellNode.width + spaceBetweenCells);
                 cellNode.y = -row * (cellNode.height + spaceBetweenCells);
+
+                EventBus.emit(GameplayEvent.CellCreated, row, col, this);
             }
         }
 

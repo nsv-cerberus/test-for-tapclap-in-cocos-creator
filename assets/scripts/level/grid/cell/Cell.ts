@@ -1,9 +1,9 @@
-const {ccclass, property, executeInEditMode} = cc._decorator;
+const {ccclass, property, menu} = cc._decorator;
 
 import Element from "./Element";
 
 @ccclass
-@executeInEditMode()
+@menu("Level/Grid/Cell")
 export default class Cell extends cc.Component {
     
     @property(cc.Node)
@@ -13,7 +13,18 @@ export default class Cell extends cc.Component {
         cc.log("Cell: onLoad");
     }
 
-    public addElement(element: Element): void {
+    public click(): void {
+        cc.log("Cell: click");
+    }
+
+    private addElement(element: Element): void {
         element.node.parent = this.container;
     }
+
+    private removeElement(element: Element): void {
+        if (element.node.parent === this.container) {
+            element.node.parent = null;
+        }
+    }
+    
 }

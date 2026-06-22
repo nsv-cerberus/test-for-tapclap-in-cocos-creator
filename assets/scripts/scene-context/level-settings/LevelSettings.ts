@@ -8,7 +8,7 @@ type LevelSettingsValue = {
 };
 
 @ccclass
-@menu("Level/Scene Context/Level Settings")
+@menu("Level/Scene Context Installer/Level Settings")
 export default class LevelSettings extends cc.Component {
 
     @property({

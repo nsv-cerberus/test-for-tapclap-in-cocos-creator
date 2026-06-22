@@ -1,5 +1,6 @@
 export enum GameplayEvent {
     CreateCells = "CreateCells",
+    CellCreated = "CellCreated",
 }
 
 export default class EventBus {
