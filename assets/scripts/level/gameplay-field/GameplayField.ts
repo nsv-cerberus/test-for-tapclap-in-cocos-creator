@@ -1,0 +1,19 @@
+const {ccclass} = cc._decorator;
+
+@ccclass
+export default class GameplayField extends cc.Component {
+
+    public resize(rows: number, cols: number, cellSize: cc.Size): void {
+        this.resizeHeight(rows, cellSize);
+        this.resizeWidth(cols, cellSize);
+    }
+    
+    private resizeWidth(cols: number, cellSize: cc.Size): void {
+        this.node.width = cols * cellSize.width + (cols - 1);
+    }
+
+    private resizeHeight(rows: number, cellSize: cc.Size): void {
+        this.node.height = rows * cellSize.height + (rows - 1);
+    }
+    
+}
