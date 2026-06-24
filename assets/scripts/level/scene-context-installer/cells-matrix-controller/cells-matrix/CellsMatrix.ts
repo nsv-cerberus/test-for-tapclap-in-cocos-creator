@@ -1,5 +1,3 @@
-import { GameplayEvent } from "../../../../EventBus";
-
 import ICellsMatrix from "./ICellsMatrix";
 import Cell from "../../../../../scripts/level/gameplay-field/grid/cell/Cell";
 
@@ -14,16 +12,25 @@ export default class CellsMatrix implements ICellsMatrix {
         }
     }
 
-    public addCell(row: number, col: number, cell: Cell): void {
-        if (this.matrix && this.matrix[row] && this.matrix[row][col] !== undefined) {
+    public setupCell(row: number, col: number, cell: Cell): void {
+        if (
+            row >= 0 && 
+            row < this.matrix.length &&
+            col >= 0 && 
+            col < this.matrix[row].length
+        ) {
             this.matrix[row][col] = cell;
         } else {
-            throw new Error(`Cannot set cell at position (${row}, ${col}).`);
+            cc.error(`Cannot set cell at position (${row}, ${col}).`);
         }
     }
 
     public getMatrix(): Cell[][] {
         return this.matrix;
+    }
+
+    public getSizeMatrix(): cc.Size {
+        return new cc.Size(this.matrix.length, this.matrix[0].length);
     }
 
     public clearMatrix(): void {

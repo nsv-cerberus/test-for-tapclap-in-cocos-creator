@@ -3,8 +3,10 @@ import ICellsMatrix from "../cells-matrix/ICellsMatrix";
 
 export default class CellsInputService implements ICellsInputService {
 
-    constructor(matrix: ICellsMatrix) {
-        // Initialization code for the CellsInputService can go here
+    private cellsMatrix: ICellsMatrix;
+
+    constructor(cellsMatrix: ICellsMatrix) {
+        this.cellsMatrix = cellsMatrix;
     }
 
     public collectChains(): void {

@@ -1,4 +1,5 @@
 export enum GameplayEvent {
+    InitGrid = "InitGrid",
     StartGame = "StartGame",
 }
 

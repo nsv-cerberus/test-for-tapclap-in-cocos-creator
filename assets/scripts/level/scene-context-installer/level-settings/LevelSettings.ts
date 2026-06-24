@@ -13,11 +13,26 @@ export default class LevelSettings extends cc.Component {
 
     private cols: number = 2;
     private rows: number = 2;
-    private minScores: number = 0;
-    private maxSteps: number = 0;
+    private minScores: number = 20;
+    private maxSteps: number = 10;
 
-    public init() {
+    public async init() {
+        const asset = await this.loadLevelSettings();
+        this.setSettingsValue(asset.json as LevelSettingsData);
+    }
 
+    private async loadLevelSettings(): Promise<cc.JsonAsset> {
+        return await new Promise((resolve, reject) => {
+            cc.resources.load("level/levelSettings", cc.JsonAsset, (err: Error, asset: cc.JsonAsset) => {
+                    if (err) {
+                        reject(err);
+                        return;
+                    }
+
+                    resolve(asset);
+                }
+            );
+        });
     }
 
     private setSettingsValue(value: LevelSettingsData): void {
@@ -25,6 +40,8 @@ export default class LevelSettings extends cc.Component {
         this.rows = value.rows;
         this.minScores = value.minScores;
         this.maxSteps = value.maxSteps;
+
+        cc.warn("LevelSettings setSettingsValue: ", this.cols, this.rows, this.minScores, this.maxSteps);
     }
 
     public getColsValue(): number {
@@ -33,6 +50,14 @@ export default class LevelSettings extends cc.Component {
 
     public getRowsValue(): number {
         return this.rows;
+    }
+
+    public getMinScoresValue(): number {
+        return this.minScores;
+    }
+
+    public getMaxStepsValue(): number {
+        return this.maxSteps;
     }
 
 }

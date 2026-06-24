@@ -1,5 +1,5 @@
-import Cell from "../../../level/grid/cell/Cell";
+import Cell from "../../../gameplay-field/grid/cell/Cell";
 
 export default interface ISpawnService {
-    spawn(cells: Cell[]): void;
+    spawn(emptyCells: Cell[]): void;
 }

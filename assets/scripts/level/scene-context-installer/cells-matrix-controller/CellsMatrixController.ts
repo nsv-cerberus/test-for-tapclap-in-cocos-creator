@@ -1,8 +1,11 @@
 const {ccclass, menu} = cc._decorator;
 
 import EventBus, { GameplayEvent } from "../../../EventBus";
-import SceneContext from "../SceneContext";
-import LevelSettingsController from "../level-settings/LevelSettings";
+import CellsMatrixControllerBase from "./CellsMatrixControllerBase";
+import Cell from "../../gameplay-field/grid/cell/Cell";
+
+import LevelSettings from "../level-settings/LevelSettings";
+import PoolManager from "../pool-manager/PoolManager";
 
 import ICellsMatrix from "./cells-matrix/ICellsMatrix";
 import CellsMatrix from "./cells-matrix/CellsMatrix";
@@ -21,7 +24,7 @@ import SpawnService from "./spawn-service/SpawnService";
 
 @ccclass
 @menu("Level/Scene Context Installer/Controllers/Cells Matrix Controller")
-export default class CellsMatrixController extends cc.Component {
+export default class CellsMatrixController extends CellsMatrixControllerBase {
 
     private cellsMatrix: ICellsMatrix;
     private cellsInputService: ICellsInputService;
@@ -29,15 +32,18 @@ export default class CellsMatrixController extends cc.Component {
     private gravityService: IGravityService;
     private spawnService: ISpawnService;
         
-    onLoad() {
-        const levelSettings = SceneContext.get(LevelSettingsController);
+    init(poolManager: PoolManager, levelSettings: LevelSettings): void {
+        cc.warn("CellsMatrixController init: ", levelSettings.getRowsValue(), levelSettings.getColsValue());
+
         this.cellsMatrix = new CellsMatrix(levelSettings.getRowsValue(), levelSettings.getColsValue());
         this.cellsInputService = new CellsInputService(this.cellsMatrix);
         this.chainCollectorService = new ChainCollectorService(this.cellsMatrix);
         this.gravityService = new GravityService(this.cellsMatrix);
-        this.spawnService = new SpawnService();
+        this.spawnService = new SpawnService(poolManager);
 
         this.subscribeToEvents();
+
+        EventBus.emit(GameplayEvent.InitGrid);
     }
 
     private subscribeToEvents(): void {
@@ -46,6 +52,14 @@ export default class CellsMatrixController extends cc.Component {
 
     private handleStartGame(): void {
         this.cellsMatrix.clearMatrix();
+    }
+
+    public setupCellToMatrix(row: number, col: number, cell: Cell): void {
+        this.cellsMatrix.setupCell(row, col, cell);
+    }
+
+    public getSizeMatrix(): cc.Size {
+        return this.cellsMatrix.getSizeMatrix();
     }
 
     onDestroy() {

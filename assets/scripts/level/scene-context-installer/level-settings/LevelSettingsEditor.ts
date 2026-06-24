@@ -28,22 +28,22 @@ export default class LevelSettingsEditor extends EditorBase {
 
     @property({
         type: cc.Integer,
-        min: 0,
+        min: 20,
     })
-    private minScores: number = 0;
+    private minScores: number = 20;
 
     @property({
         type: cc.Integer,
-        min: 0,
+        min: 10,
     })
-    private maxSteps: number = 0;
+    private maxSteps: number = 10;
 
-    private lastCols: number = null;
-    private lastRows: number = null;
-    private lastMinScores: number = null;
-    private lastMaxSteps: number = null;
+    private lastCols: number;
+    private lastRows: number;
+    private lastMinScores: number;
+    private lastMaxSteps: number;
 
-    private data: LevelSettingsData = null;
+    private data: LevelSettingsData;
     private lastJson: string = "";
 
     protected update(): void {

@@ -1,13 +1,12 @@
-import IService from "./IService";
-
-export type ServiceToken<T> = { new(...args: any[]): T };
+export type ServiceToken<T> = Function & {
+    prototype: T;
+};
 
 export default class SceneContext {
 
-    private static services = new Map<ServiceToken<any>, any>();
+    private static services = new Map<any, any>();
 
-    public static register<T extends IService>(instance: T): void {
-        const token = instance.constructor as ServiceToken<T>;
+    public static register<T>(token: ServiceToken<T>, instance: T): void {
         this.services.set(token, instance);
     }
 

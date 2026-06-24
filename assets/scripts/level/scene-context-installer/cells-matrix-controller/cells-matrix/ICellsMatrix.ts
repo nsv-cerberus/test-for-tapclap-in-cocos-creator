@@ -1,7 +1,8 @@
-import Cell from "../../../level/grid/cell/Cell";
+import Cell from "../../../gameplay-field/grid/cell/Cell";
 
 export default interface ICellsMatrix {
-    addCell(row: number, col: number, cell: Cell): void;
+    setupCell(row: number, col: number, cell: Cell): void;
     getMatrix(): Cell[][];
+    getSizeMatrix(): cc.Size;
     clearMatrix(): void;
 }

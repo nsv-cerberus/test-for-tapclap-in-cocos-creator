@@ -1,25 +1,38 @@
 const {ccclass, property, menu} = cc._decorator;
 
-import GameplayField from "../GameplayField";
 import EventBus, { GameplayEvent } from "../../../EventBus";
+
+import SceneContext from "../../scene-context-installer/SceneContext";
+import CellsMatrixControllerBase from "../../scene-context-installer/cells-matrix-controller/CellsMatrixControllerBase";
+
+import GameplayField from "../GameplayField";
 
 @ccclass
 @menu("Level/Gameplay Field/Grid")
 export default class Grid extends cc.Component {
 
     @property(GameplayField)
-    private gameplayFieldEditor: GameplayField = null;
+    private gameplayFieldEditor: GameplayField;
 
     @property(cc.Prefab)
-    cellPrefab: cc.Prefab = null;
+    cellPrefab: cc.Prefab;
+
+    private cellsMatrixController: CellsMatrixControllerBase;
 
     onLoad() {
+        EventBus.on(GameplayEvent.InitGrid, this.init, this);
+    }
+
+    init() {
         if (!this.cellPrefab) {
             cc.error("Grid: Cell prefab is not assigned!");
         }
-    }
 
-    onEnable() {}
+        this.cellsMatrixController = SceneContext.get(CellsMatrixControllerBase);
+
+        const sizeMatrix = this.cellsMatrixController.getSizeMatrix();
+        this.createCells(sizeMatrix.height, sizeMatrix.width);
+    }
 
     public createCells(rows: number, cols: number): void {
         this.removeExistingCells();
@@ -37,6 +50,11 @@ export default class Grid extends cc.Component {
                 cellNode.parent = this.node;
                 cellNode.x = col * cellNode.width;
                 cellNode.y = -row * cellNode.height;
+
+                if (this.cellsMatrixController != null)
+                {
+                    this.cellsMatrixController.setupCellToMatrix(row, col, cellNode.getComponent("Cell"));
+                }
             }
         }
 
@@ -45,7 +63,7 @@ export default class Grid extends cc.Component {
             cols, 
             new cc.Size(this.cellPrefab.data.width, this.cellPrefab.data.height)
         );
-    }    
+    }
 
     public removeExistingCells(): void {
         if (this.node.children.length === 0) {
