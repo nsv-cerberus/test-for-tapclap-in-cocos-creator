@@ -1,7 +1,7 @@
-import { GameplayEvent } from "../../../EventBus";
+import { GameplayEvent } from "../../../../EventBus";
 
 import ICellsMatrix from "./ICellsMatrix";
-import Cell from "../../../../scripts/level/grid/cell/Cell";
+import Cell from "../../../../../scripts/level/gameplay-field/grid/cell/Cell";
 
 export default class CellsMatrix implements ICellsMatrix {
     private readonly matrix: Cell[][] = null;

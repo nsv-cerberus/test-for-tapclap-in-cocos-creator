@@ -1,7 +1,5 @@
 const {ccclass, property, menu} = cc._decorator;
 
-import Element from "./Element";
-
 @ccclass
 @menu("Level/Grid/Cell")
 export default class Cell extends cc.Component {

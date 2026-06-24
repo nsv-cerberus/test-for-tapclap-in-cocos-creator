@@ -1,10 +1,10 @@
 const {ccclass, menu} = cc._decorator;
 
-type LevelSettingsValue = {
+export type LevelSettingsData = {
     cols: number;
     rows: number;
-    cellSize: cc.Size;
-    spaceBetweenCells: number;
+    minScores: number;
+    maxSteps: number;
 };
 
 @ccclass
@@ -13,10 +13,18 @@ export default class LevelSettings extends cc.Component {
 
     private cols: number = 2;
     private rows: number = 2;
+    private minScores: number = 0;
+    private maxSteps: number = 0;
 
-    private setSettingsValue(value: LevelSettingsValue): void {
+    public init() {
+
+    }
+
+    private setSettingsValue(value: LevelSettingsData): void {
         this.cols = value.cols;
         this.rows = value.rows;
+        this.minScores = value.minScores;
+        this.maxSteps = value.maxSteps;
     }
 
     public getColsValue(): number {

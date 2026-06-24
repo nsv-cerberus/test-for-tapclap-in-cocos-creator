@@ -1,6 +1,6 @@
 const {ccclass, menu} = cc._decorator;
 
-import EventBus, { GameplayEvent } from "../../EventBus";
+import EventBus, { GameplayEvent } from "../../../EventBus";
 import SceneContext from "../SceneContext";
 import LevelSettingsController from "../level-settings/LevelSettings";
 
