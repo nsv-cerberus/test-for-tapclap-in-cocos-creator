@@ -12,7 +12,7 @@ export default class Cell extends cc.Component {
     }
 
     public click(): void {
-        cc.log("Cell: click");
+        cc.log("Cell: click: " + this.node.name);
     }
 
     private addElement(element: Element): void {

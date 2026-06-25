@@ -11,10 +11,12 @@ export default class GameplayField extends cc.Component {
     
     private resizeWidth(cols: number, cellSize: cc.Size): void {
         this.node.width = cols * cellSize.width + (cols - 1);
+        cc.log("GameplayField: resizeWidth: ", this.node.width);
     }
 
     private resizeHeight(rows: number, cellSize: cc.Size): void {
         this.node.height = rows * cellSize.height + (rows - 1);
+        cc.log("GameplayField: resizeHeight: ", this.node.height);
     }
     
 }

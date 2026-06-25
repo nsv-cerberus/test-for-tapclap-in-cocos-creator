@@ -30,18 +30,18 @@ export default class LevelSettings extends cc.Component {
                     }
 
                     resolve(asset);
+                    cc.warn("JSON: ", JSON.stringify(asset.json, null, 2));
                 }
             );
         });
     }
 
     private setSettingsValue(value: LevelSettingsData): void {
+        cc.warn("LevelSettings setSettingsValue: ", value.cols, value.rows, value.minScores, value.maxSteps);
         this.cols = value.cols;
         this.rows = value.rows;
         this.minScores = value.minScores;
         this.maxSteps = value.maxSteps;
-
-        cc.warn("LevelSettings setSettingsValue: ", this.cols, this.rows, this.minScores, this.maxSteps);
     }
 
     public getCols(): number {

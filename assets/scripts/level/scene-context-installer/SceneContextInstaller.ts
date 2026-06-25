@@ -29,6 +29,8 @@ export class SceneContextInstaller extends cc.Component {
     private gameplayController: GameplayControllerBase = null;
     
     onLoad() {
+        cc.log("--- START SCENE CONTEXT INSTALLER ------------------------------------------------------------------");
+
         SceneContext.register(CellsMatrixControllerBase, this.cellsMatrixController);
         SceneContext.register(GameplayControllerBase, this.gameplayController);
 

@@ -98,8 +98,10 @@ export default class LevelSettingsEditor extends EditorBase {
 
         fs.mkdirSync(path.dirname(filePath), { recursive: true });
         fs.writeFileSync(filePath, json, "utf8");
+        
+        Editor.assetdb.refresh("db://assets/resources/level/levelSettings.json");
 
-        cc.log("Level settings saved:", filePath);
+        cc.log("Level settings saved!");
     }
 
     public getColsValue(): number {

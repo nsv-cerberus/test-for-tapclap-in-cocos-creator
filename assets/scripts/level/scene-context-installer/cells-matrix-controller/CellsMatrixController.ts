@@ -31,24 +31,22 @@ export default class CellsMatrixController extends CellsMatrixControllerBase {
     private chainCollectorService: IChainCollectorService;
     private gravityService: IGravityService;
     private spawnService: ISpawnService;
+    
+    start() {
         
+    }
+
     init(poolManager: PoolManager, levelSettings: LevelSettings): void {
         this.cellsMatrix = new CellsMatrix(levelSettings.getRows(), levelSettings.getCols());
         this.cellsInputService = new CellsInputService(this.cellsMatrix);
         this.chainCollectorService = new ChainCollectorService(this.cellsMatrix);
         this.gravityService = new GravityService(this.cellsMatrix);
         this.spawnService = new SpawnService(poolManager);
-    }
 
-    start() {
         this.initGrid(this.cellsMatrix.getSizeMatrix());
     }
 
     public initGrid: (cellsMatrixSize: cc.Size) => void = null;
-
-    /* private handleStartGame(): void {
-        this.cellsMatrix.clearMatrix();
-    } */
 
     public setupCellToMatrix(row: number, col: number, cell: Cell): void {
         this.cellsMatrix.setupCell(row, col, cell);

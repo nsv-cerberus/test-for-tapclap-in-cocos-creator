@@ -2,7 +2,6 @@ const {ccclass, property, menu} = cc._decorator;
 
 import SceneContext from "../../scene-context-installer/SceneContext";
 import CellsMatrixControllerBase from "../../scene-context-installer/cells-matrix-controller/CellsMatrixControllerBase";
-import GameplayControllerBase from "../../scene-context-installer/gameplay-controller/GameplayControllerBase";
 
 import GameplayField from "../GameplayField";
 
@@ -19,7 +18,8 @@ export default class Grid extends cc.Component {
     private cellsMatrixController: CellsMatrixControllerBase;
 
     onLoad() {
-        SceneContext.get(CellsMatrixControllerBase).initGrid = this.createCells.bind(this);
+        this.cellsMatrixController = SceneContext.get(CellsMatrixControllerBase);
+        this.cellsMatrixController.initGrid = this.createCells.bind(this);
     }
 
     start() {

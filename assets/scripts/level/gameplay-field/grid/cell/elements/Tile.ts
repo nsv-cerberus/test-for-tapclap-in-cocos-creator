@@ -1,5 +1,7 @@
 const {ccclass, property} = cc._decorator;
 
+import TileBase from "./TileBase";
+
 export enum TileType {
     Red,
     Green,
@@ -9,7 +11,7 @@ export enum TileType {
 }
 
 @ccclass
-export default class Tile extends cc.Component {
+export default class Tile extends TileBase {
 
     private type: TileType = TileType.Blue;
 
@@ -30,10 +32,10 @@ export default class Tile extends cc.Component {
 
     public setType(type: TileType): void {
         this.type = type;
-        this.defineSpriteByType();
+        this.enableSpriteByType();
     }
 
-    private defineSpriteByType(): void {
+    private enableSpriteByType(): void {
         this.disableAllSprites();
 
         switch (this.type) {
