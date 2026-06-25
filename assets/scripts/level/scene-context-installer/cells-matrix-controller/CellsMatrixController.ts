@@ -33,33 +33,25 @@ export default class CellsMatrixController extends CellsMatrixControllerBase {
     private spawnService: ISpawnService;
         
     init(poolManager: PoolManager, levelSettings: LevelSettings): void {
-        cc.warn("CellsMatrixController init: ", levelSettings.getRowsValue(), levelSettings.getColsValue());
-
-        this.cellsMatrix = new CellsMatrix(levelSettings.getRowsValue(), levelSettings.getColsValue());
+        this.cellsMatrix = new CellsMatrix(levelSettings.getRows(), levelSettings.getCols());
         this.cellsInputService = new CellsInputService(this.cellsMatrix);
         this.chainCollectorService = new ChainCollectorService(this.cellsMatrix);
         this.gravityService = new GravityService(this.cellsMatrix);
         this.spawnService = new SpawnService(poolManager);
-
-        this.subscribeToEvents();
-
-        EventBus.emit(GameplayEvent.InitGrid);
     }
 
-    private subscribeToEvents(): void {
-        EventBus.on(GameplayEvent.StartGame, this.handleStartGame, this);
+    start() {
+        this.initGrid(this.cellsMatrix.getSizeMatrix());
     }
 
-    private handleStartGame(): void {
+    public initGrid: (cellsMatrixSize: cc.Size) => void = null;
+
+    /* private handleStartGame(): void {
         this.cellsMatrix.clearMatrix();
-    }
+    } */
 
     public setupCellToMatrix(row: number, col: number, cell: Cell): void {
         this.cellsMatrix.setupCell(row, col, cell);
-    }
-
-    public getSizeMatrix(): cc.Size {
-        return this.cellsMatrix.getSizeMatrix();
     }
 
     onDestroy() {

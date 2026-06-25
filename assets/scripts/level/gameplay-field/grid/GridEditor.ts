@@ -25,7 +25,7 @@ export default class GridEditor extends EditorBase {
             this.levelSettings = canvas?.getComponentInChildren(LevelSettingsEditor);
 
             if (!this.levelSettings) {
-                cc.error("GridEditor: LevelSettingsEditor is not assigned!");
+                cc.warn("GridEditor: LevelSettingsEditor is not assigned!");
             }
         }
     }
@@ -36,9 +36,7 @@ export default class GridEditor extends EditorBase {
                 return;
             }
 
-            const rows = this.levelSettings.getRowsValue();
-            const cols = this.levelSettings.getColsValue();
-            this.grid.createCells(rows, cols);
+            this.grid.createCells(this.levelSettings.getMatrixSize());
 
             this.saveState();                
             cc.log("GridEditor: Rebuilding grid...");

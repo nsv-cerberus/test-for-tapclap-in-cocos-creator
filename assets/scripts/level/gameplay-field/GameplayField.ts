@@ -4,6 +4,7 @@ const {ccclass} = cc._decorator;
 export default class GameplayField extends cc.Component {
 
     public resize(rows: number, cols: number, cellSize: cc.Size): void {
+        cc.log("Resize Gameplay Field: ", rows, cols, cellSize.width, cellSize.height);
         this.resizeHeight(rows, cellSize);
         this.resizeWidth(cols, cellSize);
     }

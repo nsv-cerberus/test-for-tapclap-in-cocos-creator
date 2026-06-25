@@ -7,7 +7,7 @@ import ElementsStore from "./elements-store/ElementsStore";
 import PoolManager from "./pool-manager/PoolManager";
 import LevelSettings from "./level-settings/LevelSettings";
 import CellsMatrixControllerBase from "./cells-matrix-controller/CellsMatrixControllerBase";
-import GameplayController from "./gameplay-controller/GameplayController";
+import GameplayControllerBase from "./gameplay-controller/GameplayControllerBase";
 
 @ccclass
 @executionOrder(-1000)
@@ -25,16 +25,13 @@ export class SceneContextInstaller extends cc.Component {
     @property(CellsMatrixControllerBase)
     private cellsMatrixController: CellsMatrixControllerBase = null;
 
-    @property(GameplayController)
-    private gameplayController: GameplayController = null;
+    @property(GameplayControllerBase)
+    private gameplayController: GameplayControllerBase = null;
     
     onLoad() {
-        /* SceneContext.register(this.poolManager);
-        SceneContext.register(this.levelSettings); */
         SceneContext.register(CellsMatrixControllerBase, this.cellsMatrixController);
-        /* SceneContext.register(this.gameplayController); */
+        SceneContext.register(GameplayControllerBase, this.gameplayController);
 
-        cc.warn("SceneContextInstaller onLoad!");
         this.init();
     }
 
@@ -42,11 +39,8 @@ export class SceneContextInstaller extends cc.Component {
         this.poolManager.init(this.elementsStore);
         await this.levelSettings.init();
         this.cellsMatrixController.init(this.poolManager, this.levelSettings);
+        this.gameplayController.init(this.levelSettings);
     }
-
-    /* start() {
-        EventBus.emit(GameplayEvent.StartGame); // это должно быть в GameplayController, а не в SceneContextInstaller
-    } */
 
     onDestroy() {
         SceneContext.clear();

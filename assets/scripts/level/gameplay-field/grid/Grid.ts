@@ -1,9 +1,8 @@
 const {ccclass, property, menu} = cc._decorator;
 
-import EventBus, { GameplayEvent } from "../../../EventBus";
-
 import SceneContext from "../../scene-context-installer/SceneContext";
 import CellsMatrixControllerBase from "../../scene-context-installer/cells-matrix-controller/CellsMatrixControllerBase";
+import GameplayControllerBase from "../../scene-context-installer/gameplay-controller/GameplayControllerBase";
 
 import GameplayField from "../GameplayField";
 
@@ -20,21 +19,29 @@ export default class Grid extends cc.Component {
     private cellsMatrixController: CellsMatrixControllerBase;
 
     onLoad() {
-        EventBus.on(GameplayEvent.InitGrid, this.init, this);
+        SceneContext.get(CellsMatrixControllerBase).initGrid = this.createCells.bind(this);
     }
 
-    init() {
-        if (!this.cellPrefab) {
+    start() {
+        /* if (!this.cellPrefab) {
             cc.error("Grid: Cell prefab is not assigned!");
         }
 
         this.cellsMatrixController = SceneContext.get(CellsMatrixControllerBase);
 
         const sizeMatrix = this.cellsMatrixController.getSizeMatrix();
-        this.createCells(sizeMatrix.height, sizeMatrix.width);
+        this.createCells(sizeMatrix.height, sizeMatrix.width); */
     }
 
-    public createCells(rows: number, cols: number): void {
+    public createCells(cellsMatrixSize: cc.Size): void {
+        const rows = cellsMatrixSize.height;
+        const cols = cellsMatrixSize.width;
+
+        if (!this.cellPrefab) {
+            cc.error("Grid: Cell prefab is not assigned!");
+            return;
+        }
+
         this.removeExistingCells();
 
         const cellComponent = this.cellPrefab.data.getComponent("Cell");
@@ -87,6 +94,6 @@ export default class Grid extends cc.Component {
 
     onDestroy() {
         this.removeExistingCells();
-        EventBus.targetOff(this);
+        /* EventBus.targetOff(this); */
     }
 }

@@ -110,4 +110,8 @@ export default class LevelSettingsEditor extends EditorBase {
         return this.rows;
     }
 
+    public getMatrixSize(): cc.Size {
+        return new cc.Size(this.cols, this.rows);
+    }
+
 }

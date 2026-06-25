@@ -44,19 +44,19 @@ export default class LevelSettings extends cc.Component {
         cc.warn("LevelSettings setSettingsValue: ", this.cols, this.rows, this.minScores, this.maxSteps);
     }
 
-    public getColsValue(): number {
+    public getCols(): number {
         return this.cols;
     }
 
-    public getRowsValue(): number {
+    public getRows(): number {
         return this.rows;
     }
 
-    public getMinScoresValue(): number {
+    public getMinScores(): number {
         return this.minScores;
     }
 
-    public getMaxStepsValue(): number {
+    public getMaxSteps(): number {
         return this.maxSteps;
     }
 
