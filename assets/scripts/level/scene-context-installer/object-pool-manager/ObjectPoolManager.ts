@@ -1,36 +1,22 @@
 const { ccclass, property, menu } = cc._decorator;
 
-import ElementsStoreBase from "./elements-store/ElementsStoreBase";
-import Poolable from "./Poolable";
+import PrefabsStoreBase from "./prefabs-store/PrefabsStoreBase";
 
 @ccclass
 @menu("Level/Scene Context Installer/Controllers/Object Pool Manager Controller")
 export default class ObjectPoolManager extends cc.Component {
 
-    @property(ElementsStoreBase)
-    private elementsStore: ElementsStoreBase = null;
+    @property(PrefabsStoreBase)
+    private prefabsStore: PrefabsStoreBase = null;
 
     private pools: Map<string, cc.NodePool> = new Map();
 
     onLoad() {
-        if (!this.elementsStore) {
-            this.elementsStore = this.getComponentInChildren(ElementsStoreBase);
-
-            if (!this.elementsStore) {
-                cc.error("ObjectPoolManager: ElementsStore component is not found in children!");
-                return;
-            }
-        }
+        this.resolvePrefabsStore();
     }
 
     public release(key: string, node: cc.Node): void {
         const pool = this.getOrCreatePool(key);
-
-        const poolable = node.getComponent(Poolable);
-
-        if (poolable) {
-            poolable.onDespawn();
-        }
 
         node.active = false;
         pool.put(node);
@@ -49,7 +35,23 @@ export default class ObjectPoolManager extends cc.Component {
 
     public get<T extends cc.Component>(componentClass: any): T {
 
-        const prefab = this.elementsStore.getPrefab(componentClass);
+        if (!componentClass) {
+            cc.error("ObjectPoolManager: Component class is not assigned!");
+            return null;
+        }
+
+        if (!this.resolvePrefabsStore()) {
+            cc.error("ObjectPoolManager: PrefabsStore is not assigned!");
+            return null;
+        }
+
+        const prefab = this.prefabsStore.getPrefab(componentClass);
+
+        if (!prefab) {
+            cc.error(`ObjectPoolManager: Prefab for ${componentClass.name} is not assigned!`);
+            return null;
+        }
+
         const pool = this.getOrCreatePool(componentClass.name);
 
         const node = pool.size() > 0
@@ -57,13 +59,6 @@ export default class ObjectPoolManager extends cc.Component {
             : cc.instantiate(prefab);
 
         node.active = true;
-
-        const poolable = node.getComponent(Poolable);
-
-        if (poolable) {
-            poolable.initPool(this, componentClass.name);
-            poolable.onSpawn();
-        }
 
         return node.getComponent(componentClass) as T;
     }
@@ -87,6 +82,14 @@ export default class ObjectPoolManager extends cc.Component {
 
         return pool;
     }    
+
+    private resolvePrefabsStore(): PrefabsStoreBase {
+        if (!this.prefabsStore) {
+            this.prefabsStore = this.getComponentInChildren(PrefabsStoreBase);
+        }
+
+        return this.prefabsStore;
+    }
 
     public clearAll(): void {
         this.pools.forEach((pool: cc.NodePool) => {

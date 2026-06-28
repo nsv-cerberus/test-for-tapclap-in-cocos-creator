@@ -2,8 +2,10 @@ const {ccclass, property, menu} = cc._decorator;
 
 import SceneContext from "../../scene-context-installer/SceneContext";
 import CellsMatrixControllerBase from "../../scene-context-installer/cells-matrix-controller/CellsMatrixControllerBase";
+import ObjectPoolManager from "../../scene-context-installer/object-pool-manager/ObjectPoolManager";
 
 import GameplayField from "../GameplayField";
+import Cell from "./cell/Cell";
 import CellBase from "./cell/CellBase";
 
 @ccclass
@@ -13,55 +15,51 @@ export default class Grid extends cc.Component {
     @property(GameplayField)
     private gameplayFieldEditor: GameplayField;
 
-    @property(cc.Prefab)
-    private cellPrefab: cc.Prefab;
-
     private cellsMatrixController: CellsMatrixControllerBase;
+    private poolManager: ObjectPoolManager;
 
     onLoad() {
         this.cellsMatrixController = SceneContext.get(CellsMatrixControllerBase);
+        this.poolManager = this.resolvePoolManager();
         this.cellsMatrixController.onInitGrid = this.createCells.bind(this);
-    }
-
-    start() {
-        /* if (!this.cellPrefab) {
-            cc.error("Grid: Cell prefab is not assigned!");
-        }
-
-        this.cellsMatrixController = SceneContext.get(CellsMatrixControllerBase);
-
-        const sizeMatrix = this.cellsMatrixController.getSizeMatrix();
-        this.createCells(sizeMatrix.height, sizeMatrix.width); */
     }
 
     public createCells(cellsMatrixSize: cc.Size): void {
         const rows = cellsMatrixSize.height;
         const cols = cellsMatrixSize.width;
 
-        if (!this.cellPrefab) {
-            cc.error("Grid: Cell prefab is not assigned!");
-            return;
-        }
+        this.poolManager = this.poolManager || this.resolvePoolManager();
 
         this.removeExistingCells();
 
-        const cellComponent = this.cellPrefab.data.getComponent("Cell") as CellBase;
-        if (cellComponent == null) {
-            cc.error("Grid: Cell prefab does not have a Cell component!");
-            return;
-        }
+        let cellSize: cc.Size = null;
 
         for (let row = 0; row < rows; row++) {
             for (let col = 0; col < cols; col++) {
-                const cellNode = cc.instantiate(this.cellPrefab);
+                if (!this.poolManager) {
+                    cc.error("Grid: ObjectPoolManager is not found!");
+                    return;
+                }
+
+                const cell = this.poolManager.get(Cell) as CellBase;
+
+                if (!cell) {
+                    cc.error("Grid: Cell prefab does not have a Cell component!");
+                    return;
+                }
+
+                const cellNode = cell.node;
                 cellNode.name = `Cell_${row}_${col}`;
                 cellNode.parent = this.node;
                 cellNode.x = col * cellNode.width;
                 cellNode.y = -row * cellNode.height;
 
+                if (!cellSize) {
+                    cellSize = new cc.Size(cellNode.width, cellNode.height);
+                }
+
                 if (this.cellsMatrixController != null)
                 {
-                    const cell = cellNode.getComponent("Cell") as CellBase;
                     this.cellsMatrixController.setupCellToMatrix(row, col, cell);
                     cell.setPositionInMatrix(row, col);
                 }
@@ -71,7 +69,7 @@ export default class Grid extends cc.Component {
         this.gameplayFieldEditor.resize(
             rows,
             cols,
-            new cc.Size(this.cellPrefab.data.width, this.cellPrefab.data.height)
+            cellSize || new cc.Size(0, 0)
         );
     }
 
@@ -79,16 +77,18 @@ export default class Grid extends cc.Component {
         if (this.node.children.length === 0) {
             return;
         }
+
+        this.poolManager = this.poolManager || this.resolvePoolManager();
         
         const children = this.node.children.slice();
 
         for (const child of children) {
-            child.destroy();
+            if (this.poolManager) {
+                this.poolManager.release(Cell.name, child);
+            } else {
+                child.destroy();
+            }
         }
-    }
-
-    public getCellPrefab(): cc.Prefab {
-        return this.cellPrefab;
     }
 
     public getGameplayFieldEditor(): GameplayField {
@@ -97,6 +97,14 @@ export default class Grid extends cc.Component {
 
     onDestroy() {
         this.removeExistingCells();
-        /* EventBus.targetOff(this); */
+    }
+
+    private resolvePoolManager(): ObjectPoolManager {
+        try {
+            return SceneContext.get(ObjectPoolManager);
+        } catch (error) {
+            const scene = cc.director.getScene();
+            return scene ? scene.getComponentInChildren(ObjectPoolManager) : null;
+        }
     }
 }

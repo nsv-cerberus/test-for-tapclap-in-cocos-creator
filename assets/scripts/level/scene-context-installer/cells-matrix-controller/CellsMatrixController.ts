@@ -4,16 +4,12 @@ import EventBus, { LevelEvent, GameplayEvent } from "../../../EventBus";
 import SceneContext from "../SceneContext";
 
 import CellsMatrixControllerBase from "./CellsMatrixControllerBase";
-import CellBase from "../../gameplay-field/grid/cell/Cell";
+import CellBase from "../../gameplay-field/grid/cell/CellBase";
 
 import LevelSettings from "../level-settings/LevelSettings";
-import ObjectPoolManager from "../object-pool-manager/ObjectPoolManager";
 
 import ICellsMatrix from "./cells-matrix/ICellsMatrix";
 import CellsMatrix from "./cells-matrix/CellsMatrix";
-
-import ICellsInputService from "./cells-input-service/ICellsInputService";
-import CellsInputService from "./cells-input-service/CellsInputService";
 
 import IChainCollectorService from "./chain-collector-service/IChainCollectorService";
 import ChainCollectorService from "./chain-collector-service/ChainCollectorService";

@@ -21,9 +21,6 @@
         "__id__": 2
       },
       {
-        "__id__": 5
-      },
-      {
         "__id__": 8
       },
       {
@@ -91,102 +88,16 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Elements Store",
+    "_name": "Object Pool Manager",
     "_objFlags": 0,
     "_parent": {
       "__id__": 1
     },
-    "_children": [],
-    "_active": true,
-    "_components": [
+    "_children": [
       {
         "__id__": 3
       }
     ],
-    "_prefab": {
-      "__id__": 4
-    },
-    "_opacity": 255,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_skewX": 0,
-    "_skewY": 0,
-    "_is3DNode": false,
-    "_groupIndex": 0,
-    "groupIndex": 0,
-    "_id": ""
-  },
-  {
-    "__type__": "e6bdfyyog1K+oN2FnzWyyZp",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 2
-    },
-    "_enabled": true,
-    "tilePrefab": {
-      "__uuid__": "832a8b44-5223-4e57-aa5b-154d7e3cc4a2"
-    },
-    "rocketsPrefab": null,
-    "bombPrefab": null,
-    "_id": ""
-  },
-  {
-    "__type__": "cc.PrefabInfo",
-    "root": {
-      "__id__": 1
-    },
-    "asset": {
-      "__id__": 0
-    },
-    "fileId": "101oelLa9PfIrrgZ8ZQTNp",
-    "sync": false
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "Pool Manager",
-    "_objFlags": 0,
-    "_parent": {
-      "__id__": 1
-    },
-    "_children": [],
     "_active": true,
     "_components": [
       {
@@ -244,13 +155,109 @@
     "_id": ""
   },
   {
+    "__type__": "cc.Node",
+    "_name": "Prefabs Store",
+    "_objFlags": 0,
+    "_parent": {
+      "__id__": 2
+    },
+    "_children": [],
+    "_active": true,
+    "_components": [
+      {
+        "__id__": 4
+      }
+    ],
+    "_prefab": {
+      "__id__": 5
+    },
+    "_opacity": 255,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_skewX": 0,
+    "_skewY": 0,
+    "_is3DNode": false,
+    "_groupIndex": 0,
+    "groupIndex": 0,
+    "_id": ""
+  },
+  {
+    "__type__": "e6bdfyyog1K+oN2FnzWyyZp",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 3
+    },
+    "_enabled": true,
+    "cellPrefab": {
+      "__uuid__": "d9873809-eda5-4ab5-b1e6-956f26659a85"
+    },
+    "tilePrefab": {
+      "__uuid__": "832a8b44-5223-4e57-aa5b-154d7e3cc4a2"
+    },
+    "rocketsPrefab": null,
+    "bombPrefab": null,
+    "_id": ""
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__id__": 0
+    },
+    "fileId": "44X7LUjdZKXK8kMoeDkv9O",
+    "sync": false
+  },
+  {
     "__type__": "59b20rGKNVExqIASCg/Cs+d",
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 5
+      "__id__": 2
     },
     "_enabled": true,
+    "prefabsStore": {
+      "__id__": 4
+    },
     "_id": ""
   },
   {
@@ -351,6 +358,8 @@
     "_enabled": true,
     "cols": 2,
     "rows": 2,
+    "minScores": 20,
+    "maxSteps": 10,
     "_id": ""
   },
   {
@@ -542,9 +551,6 @@
       "__id__": 1
     },
     "_enabled": true,
-    "elementsStore": {
-      "__id__": 3
-    },
     "poolManager": {
       "__id__": 6
     },

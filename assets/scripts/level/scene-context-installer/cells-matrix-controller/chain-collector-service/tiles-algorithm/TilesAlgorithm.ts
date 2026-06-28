@@ -15,13 +15,11 @@ export default class TilesAlgorithm implements ITilesAlgorithm {
     public collect(cell: CellBase): CellBase[] {
         const startElement = cell.getElement();
 
-        if (!(startElement instanceof Tile)) {
+        if (!this.isTile(startElement)) {
             return [];
         }
 
         const targetType = startElement.getTileType();
-
-        cc.log("Collecting chain for tile type: ", targetType);
 
         const chain: CellBase[] = [];
         const visited = new Set<CellBase>();
@@ -48,8 +46,7 @@ export default class TilesAlgorithm implements ITilesAlgorithm {
 
                 const neighborElement = neighborCell.getElement();
 
-                if (!(neighborElement instanceof Tile)) {
-                    
+                if (!this.isTile(neighborElement)) {
                     continue;
                 }
 
@@ -65,5 +62,9 @@ export default class TilesAlgorithm implements ITilesAlgorithm {
         cc.log("Collected chain length: ", chain.length, " Chain positions: ", chain.map(c => c.getPositionInMatrix()));
 
         return chain;
+    }
+
+    private isTile(element: any): element is Tile {
+        return element && typeof element.getTileType === "function";
     }
 }

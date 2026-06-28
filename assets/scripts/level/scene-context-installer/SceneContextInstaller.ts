@@ -27,6 +27,8 @@ export class SceneContextInstaller extends cc.Component {
     onLoad() {
         cc.log("--- START SCENE CONTEXT INSTALLER ------------------------------------------------------------------");
 
+        this.resolveReferences();
+
         SceneContext.register(ObjectPoolManager, this.poolManager);
         SceneContext.register(LevelSettings, this.levelSettings);
         SceneContext.register(CellsMatrixControllerBase, this.cellsMatrixController);
@@ -43,5 +45,23 @@ export class SceneContextInstaller extends cc.Component {
 
     onDestroy() {
         SceneContext.clear();
+    }
+
+    private resolveReferences(): void {
+        if (!this.poolManager) {
+            this.poolManager = this.getComponentInChildren(ObjectPoolManager);
+        }
+
+        if (!this.levelSettings) {
+            this.levelSettings = this.getComponentInChildren(LevelSettings);
+        }
+
+        if (!this.cellsMatrixController) {
+            this.cellsMatrixController = this.getComponentInChildren(CellsMatrixControllerBase);
+        }
+
+        if (!this.gameplayController) {
+            this.gameplayController = this.getComponentInChildren(GameplayControllerBase);
+        }
     }
 }
