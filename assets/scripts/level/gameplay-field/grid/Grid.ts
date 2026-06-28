@@ -4,6 +4,7 @@ import SceneContext from "../../scene-context-installer/SceneContext";
 import CellsMatrixControllerBase from "../../scene-context-installer/cells-matrix-controller/CellsMatrixControllerBase";
 
 import GameplayField from "../GameplayField";
+import CellBase from "./cell/CellBase";
 
 @ccclass
 @menu("Level/Gameplay Field/Grid")
@@ -13,13 +14,13 @@ export default class Grid extends cc.Component {
     private gameplayFieldEditor: GameplayField;
 
     @property(cc.Prefab)
-    cellPrefab: cc.Prefab;
+    private cellPrefab: cc.Prefab;
 
     private cellsMatrixController: CellsMatrixControllerBase;
 
     onLoad() {
         this.cellsMatrixController = SceneContext.get(CellsMatrixControllerBase);
-        this.cellsMatrixController.initGrid = this.createCells.bind(this);
+        this.cellsMatrixController.onInitGrid = this.createCells.bind(this);
     }
 
     start() {
@@ -44,7 +45,7 @@ export default class Grid extends cc.Component {
 
         this.removeExistingCells();
 
-        const cellComponent = this.cellPrefab.data.getComponent("Cell");
+        const cellComponent = this.cellPrefab.data.getComponent("Cell") as CellBase;
         if (cellComponent == null) {
             cc.error("Grid: Cell prefab does not have a Cell component!");
             return;
@@ -60,14 +61,16 @@ export default class Grid extends cc.Component {
 
                 if (this.cellsMatrixController != null)
                 {
-                    this.cellsMatrixController.setupCellToMatrix(row, col, cellNode.getComponent("Cell"));
+                    const cell = cellNode.getComponent("Cell") as CellBase;
+                    this.cellsMatrixController.setupCellToMatrix(row, col, cell);
+                    cell.setPositionInMatrix(row, col);
                 }
             }
         }
 
         this.gameplayFieldEditor.resize(
-            rows, 
-            cols, 
+            rows,
+            cols,
             new cc.Size(this.cellPrefab.data.width, this.cellPrefab.data.height)
         );
     }

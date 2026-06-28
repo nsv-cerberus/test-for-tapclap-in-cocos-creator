@@ -597,7 +597,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "adb324db-ea85-4268-889f-4f2a307dc651"
+      "__uuid__": "45f74117-50ee-4d67-bc40-fac2bd53ff56"
     },
     "_type": 0,
     "_sizeMode": 1,
@@ -632,14 +632,14 @@
       "__id__": 1
     },
     "_enabled": true,
-    "blue": {
-      "__id__": 3
-    },
     "red": {
       "__id__": 6
     },
     "green": {
       "__id__": 9
+    },
+    "blue": {
+      "__id__": 3
     },
     "yellow": {
       "__id__": 12

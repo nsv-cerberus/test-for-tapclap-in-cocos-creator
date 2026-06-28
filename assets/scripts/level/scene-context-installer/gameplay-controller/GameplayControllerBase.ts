@@ -5,6 +5,6 @@ const {ccclass} = cc._decorator;
 @ccclass
 export default abstract class GameplayControllerBase extends cc.Component {
 
-    public abstract init(levelSettings: LevelSettings): void;
+    public abstract init(/* levelSettings: LevelSettings */): void;
 
 }

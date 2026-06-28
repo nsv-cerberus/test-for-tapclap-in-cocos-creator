@@ -1,10 +1,8 @@
 const { ccclass, property, executionOrder, menu } = cc._decorator;
 
-import EventBus, { GameplayEvent } from "../../EventBus";
 import SceneContext from "./SceneContext";
 
-import ElementsStore from "./elements-store/ElementsStore";
-import PoolManager from "./pool-manager/PoolManager";
+import ObjectPoolManager from "./object-pool-manager/ObjectPoolManager";
 import LevelSettings from "./level-settings/LevelSettings";
 import CellsMatrixControllerBase from "./cells-matrix-controller/CellsMatrixControllerBase";
 import GameplayControllerBase from "./gameplay-controller/GameplayControllerBase";
@@ -13,11 +11,9 @@ import GameplayControllerBase from "./gameplay-controller/GameplayControllerBase
 @executionOrder(-1000)
 @menu("Level/Scene Context Installer/Scene Context Installer")
 export class SceneContextInstaller extends cc.Component {
-    @property(ElementsStore)
-    private elementsStore: ElementsStore = null;
 
-    @property(PoolManager)
-    private poolManager: PoolManager = null;
+    @property(ObjectPoolManager)
+    private poolManager: ObjectPoolManager = null;
     
     @property(LevelSettings)
     private levelSettings: LevelSettings = null;
@@ -31,6 +27,8 @@ export class SceneContextInstaller extends cc.Component {
     onLoad() {
         cc.log("--- START SCENE CONTEXT INSTALLER ------------------------------------------------------------------");
 
+        SceneContext.register(ObjectPoolManager, this.poolManager);
+        SceneContext.register(LevelSettings, this.levelSettings);
         SceneContext.register(CellsMatrixControllerBase, this.cellsMatrixController);
         SceneContext.register(GameplayControllerBase, this.gameplayController);
 
@@ -38,10 +36,9 @@ export class SceneContextInstaller extends cc.Component {
     }
 
     private async init() {
-        this.poolManager.init(this.elementsStore);
         await this.levelSettings.init();
-        this.cellsMatrixController.init(this.poolManager, this.levelSettings);
-        this.gameplayController.init(this.levelSettings);
+        this.cellsMatrixController.init();
+        this.gameplayController.init();
     }
 
     onDestroy() {

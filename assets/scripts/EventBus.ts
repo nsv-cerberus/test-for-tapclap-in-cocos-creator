@@ -1,13 +1,19 @@
-export enum GameplayEvent {
-    InitGrid = "InitGrid",
-    StartGame = "StartGame",
+export enum LevelEvent {
+    LevelSettingsReady = "LevelSettingsReady",
+    GridInitialized = "GridInitialized",
 }
+
+export enum GameplayEvent {
+    NewGame = "NewGame",
+}
+
+export type EventType = LevelEvent | GameplayEvent;
 
 export default class EventBus {
     private static readonly _target = new cc.EventTarget();
 
     public static on(
-        event: GameplayEvent,
+        event: EventType,
         callback: Function,
         target?: any
     ): void {
@@ -15,7 +21,7 @@ export default class EventBus {
     }
 
     public static off(
-        event: GameplayEvent,
+        event: EventType,
         callback: Function,
         target?: any
     ): void {
@@ -23,7 +29,7 @@ export default class EventBus {
     }
 
     public static emit(
-        event: GameplayEvent,
+        event: EventType,
         ...args: any[]
     ): void {
         this._target.emit(event, ...args);

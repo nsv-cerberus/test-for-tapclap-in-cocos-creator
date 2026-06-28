@@ -1,3 +1,5 @@
+import EventBus, { LevelEvent } from "../../../EventBus";
+
 const {ccclass, menu} = cc._decorator;
 
 export type LevelSettingsData = {
@@ -37,11 +39,12 @@ export default class LevelSettings extends cc.Component {
     }
 
     private setSettingsValue(value: LevelSettingsData): void {
-        cc.warn("LevelSettings setSettingsValue: ", value.cols, value.rows, value.minScores, value.maxSteps);
         this.cols = value.cols;
         this.rows = value.rows;
         this.minScores = value.minScores;
         this.maxSteps = value.maxSteps;
+
+        EventBus.emit(LevelEvent.LevelSettingsReady, this);
     }
 
     public getCols(): number {

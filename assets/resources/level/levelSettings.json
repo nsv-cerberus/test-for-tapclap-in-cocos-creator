@@ -1,6 +1,6 @@
 {
-  "cols": 3,
-  "rows": 3,
+  "cols": 9,
+  "rows": 10,
   "minScores": 20,
   "maxSteps": 10
 }

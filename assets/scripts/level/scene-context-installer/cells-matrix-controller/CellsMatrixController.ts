@@ -1,11 +1,13 @@
 const {ccclass, menu} = cc._decorator;
 
-import EventBus, { GameplayEvent } from "../../../EventBus";
+import EventBus, { LevelEvent, GameplayEvent } from "../../../EventBus";
+import SceneContext from "../SceneContext";
+
 import CellsMatrixControllerBase from "./CellsMatrixControllerBase";
-import Cell from "../../gameplay-field/grid/cell/Cell";
+import CellBase from "../../gameplay-field/grid/cell/Cell";
 
 import LevelSettings from "../level-settings/LevelSettings";
-import PoolManager from "../pool-manager/PoolManager";
+import ObjectPoolManager from "../object-pool-manager/ObjectPoolManager";
 
 import ICellsMatrix from "./cells-matrix/ICellsMatrix";
 import CellsMatrix from "./cells-matrix/CellsMatrix";
@@ -26,30 +28,43 @@ import SpawnService from "./spawn-service/SpawnService";
 @menu("Level/Scene Context Installer/Controllers/Cells Matrix Controller")
 export default class CellsMatrixController extends CellsMatrixControllerBase {
 
+    public onInitGrid: (cellsMatrixSize: cc.Size) => void = null;
+    
     private cellsMatrix: ICellsMatrix;
-    private cellsInputService: ICellsInputService;
     private chainCollectorService: IChainCollectorService;
     private gravityService: IGravityService;
     private spawnService: ISpawnService;
     
-    start() {
-        
+    onLoad() {
+        EventBus.on(LevelEvent.LevelSettingsReady, this.createMatrix, this);
+        EventBus.on(GameplayEvent.NewGame, this.spawnTails, this);
     }
 
-    init(poolManager: PoolManager, levelSettings: LevelSettings): void {
-        this.cellsMatrix = new CellsMatrix(levelSettings.getRows(), levelSettings.getCols());
-        this.cellsInputService = new CellsInputService(this.cellsMatrix);
+    public init(): void {
         this.chainCollectorService = new ChainCollectorService(this.cellsMatrix);
         this.gravityService = new GravityService(this.cellsMatrix);
-        this.spawnService = new SpawnService(poolManager);
+        this.spawnService = new SpawnService();
+    }   
 
-        this.initGrid(this.cellsMatrix.getSizeMatrix());
+    private createMatrix(): void {
+        const settings = SceneContext.get(LevelSettings);
+        const rows = settings.getRows();
+        const cols = settings.getCols();
+
+        this.cellsMatrix = new CellsMatrix(rows, cols);
+        this.onInitGrid(this.cellsMatrix.getSizeMatrix());
     }
 
-    public initGrid: (cellsMatrixSize: cc.Size) => void = null;
-
-    public setupCellToMatrix(row: number, col: number, cell: Cell): void {
+    public setupCellToMatrix(row: number, col: number, cell: CellBase): void {
         this.cellsMatrix.setupCell(row, col, cell);
+    }
+
+    private spawnTails(): void {
+        this.spawnService.spawnTails(this.cellsMatrix.getEmptyCells());
+    }
+
+    public cellClick(cell: CellBase): void {
+        const chain = this.chainCollectorService.collectChains(cell);
     }
 
     onDestroy() {

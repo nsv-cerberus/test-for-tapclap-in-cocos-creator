@@ -1,6 +1,6 @@
 const {ccclass, property} = cc._decorator;
 
-import TileBase from "./TileBase";
+import ElementBase from "./ElementBase";
 
 export enum TileType {
     Red,
@@ -11,12 +11,9 @@ export enum TileType {
 }
 
 @ccclass
-export default class Tile extends TileBase {
+export default class Tile extends ElementBase {
 
     private type: TileType = TileType.Blue;
-
-    @property(cc.Sprite)
-    private blue: cc.Sprite = null;
 
     @property(cc.Sprite)
     private red: cc.Sprite = null;
@@ -25,12 +22,25 @@ export default class Tile extends TileBase {
     private green: cc.Sprite = null;
 
     @property(cc.Sprite)
+    private blue: cc.Sprite = null;
+
+    @property(cc.Sprite)
     private yellow: cc.Sprite = null;
 
     @property(cc.Sprite)
     private purple: cc.Sprite = null;
 
-    public setType(type: TileType): void {
+    onEnable() {
+        this.defineRandomeType();
+    }
+
+    private defineRandomeType() {
+        const types = Object.values(TileType).filter(value => typeof value === "number") as TileType[];
+        const randomIndex = Math.floor(Math.random() * types.length);
+        this.setTileType(types[randomIndex]);
+    }
+
+    private setTileType(type: TileType): void {
         this.type = type;
         this.enableSpriteByType();
     }
@@ -55,7 +65,7 @@ export default class Tile extends TileBase {
                 this.enableSprite(this.purple);
                 break;
             default:
-                cc.warn("Tile: Unknown type");
+                cc.error("Tile: Unknown type");
                 break;
         }
     }
@@ -76,7 +86,11 @@ export default class Tile extends TileBase {
         sprite.node.active = false;
     }
 
-    public getType(): TileType {
+    public getType(): ElementBase {
+        return this;
+    }
+
+    public getTileType(): TileType {
         return this.type;
     }
     

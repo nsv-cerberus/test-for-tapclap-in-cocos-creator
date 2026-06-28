@@ -1,17 +1,26 @@
-const { ccclass, menu } = cc._decorator;
+const { ccclass, property, menu } = cc._decorator;
 
-import ElementsStore from "../elements-store/ElementsStore";
+import ElementsStoreBase from "./elements-store/ElementsStoreBase";
 import Poolable from "./Poolable";
 
 @ccclass
-@menu("Level/Scene Context Installer/Controllers/Pool Manager Controller")
-export default class PoolManager extends cc.Component {
+@menu("Level/Scene Context Installer/Controllers/Object Pool Manager Controller")
+export default class ObjectPoolManager extends cc.Component {
 
-    private elementsStore: ElementsStore = null;
+    @property(ElementsStoreBase)
+    private elementsStore: ElementsStoreBase = null;
+
     private pools: Map<string, cc.NodePool> = new Map();
 
-    public init(elementsStore: ElementsStore): void {
-        this.elementsStore = elementsStore;
+    onLoad() {
+        if (!this.elementsStore) {
+            this.elementsStore = this.getComponentInChildren(ElementsStoreBase);
+
+            if (!this.elementsStore) {
+                cc.error("ObjectPoolManager: ElementsStore component is not found in children!");
+                return;
+            }
+        }
     }
 
     public release(key: string, node: cc.Node): void {
@@ -38,32 +47,25 @@ export default class PoolManager extends cc.Component {
         this.pools.delete(key);
     }
 
-    public get(key: string, prefab: cc.Prefab, parent: cc.Node): cc.Node {
-        const pool = this.getOrCreatePool(key);
+    public get<T extends cc.Component>(componentClass: any): T {
+
+        const prefab = this.elementsStore.getPrefab(componentClass);
+        const pool = this.getOrCreatePool(componentClass.name);
 
         const node = pool.size() > 0
             ? pool.get()
             : cc.instantiate(prefab);
 
-        parent.addChild(node);
         node.active = true;
 
         const poolable = node.getComponent(Poolable);
 
         if (poolable) {
-            poolable.initPool(this, key);
+            poolable.initPool(this, componentClass.name);
             poolable.onSpawn();
         }
 
-        return node;
-    }
-
-    public clearAll(): void {
-        this.pools.forEach((pool: cc.NodePool) => {
-            pool.clear();
-        });
-
-        this.pools.clear();
+        return node.getComponent(componentClass) as T;
     }
 
     public hasPool(key: string): boolean {
@@ -84,6 +86,14 @@ export default class PoolManager extends cc.Component {
         }
 
         return pool;
+    }    
+
+    public clearAll(): void {
+        this.pools.forEach((pool: cc.NodePool) => {
+            pool.clear();
+        });
+
+        this.pools.clear();
     }
 
     protected onDestroy(): void {

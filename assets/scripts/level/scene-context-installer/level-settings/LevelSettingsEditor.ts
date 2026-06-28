@@ -22,7 +22,7 @@ export default class LevelSettingsEditor extends EditorBase {
     @property({
         type: cc.Integer,
         min: 2,
-        max: 11,
+        max: 10,
     })
     private rows: number = 2;
 

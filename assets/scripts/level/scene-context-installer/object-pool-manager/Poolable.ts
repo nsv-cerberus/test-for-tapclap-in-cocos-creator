@@ -1,13 +1,13 @@
 const { ccclass } = cc._decorator;
 
-import PoolManager from "./PoolManager";
+import ObjectPoolManager from "./PoolManager";
 
 @ccclass
 export default class Poolable extends cc.Component {
-    private poolManager: PoolManager = null;
+    private poolManager: ObjectPoolManager = null;
     private poolKey: string = "";
 
-    public initPool(poolManager: PoolManager, poolKey: string): void {
+    public initPool(poolManager: ObjectPoolManager, poolKey: string): void {
         this.poolManager = poolManager;
         this.poolKey = poolKey;
     }

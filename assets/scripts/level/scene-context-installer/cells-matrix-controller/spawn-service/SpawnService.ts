@@ -1,17 +1,27 @@
 import ISpawnService from "./ISpawnService";
-import PoolManager from "../../pool-manager/PoolManager";
-import Cell from "../../../gameplay-field/grid/cell/Cell";
+import SceneContext from "../../SceneContext";
+import ObjectPoolManager from "../../object-pool-manager/ObjectPoolManager";
+
+import CellBase from "../../../gameplay-field/grid/cell/CellBase";
+import Tile from "../../../gameplay-field/grid/cell/elements/Tile";
 
 export default class SpawnService implements ISpawnService {
 
-    private poolManager: PoolManager;
+    private poolManager: ObjectPoolManager;
 
-    constructor(poolManager: PoolManager) {
-        this.poolManager = poolManager;
+    constructor() {
+        this.poolManager = SceneContext.get(ObjectPoolManager);
     }
 
-    spawn(emptyCells: Cell[]): void {
-        // Implement spawn logic here
+    public spawnTails(emptyCells: CellBase[]): void {
+        for (const emptyCell of emptyCells) {
+            const tail = this.poolManager.get(Tile);
+            if (tail) {
+                emptyCell.addElement(tail as Tile);
+            } else {
+                cc.error("No available tails in the pool.");
+            }
+        }
     }
 
 }

@@ -1,9 +1,9 @@
-const {ccclass} = cc._decorator;
+import Cell from "../../gameplay-field/grid/cell/Cell";
+import CellBase from "../../gameplay-field/grid/cell/CellBase";
 
-@ccclass
 export default abstract class CellsMatrixControllerBase extends cc.Component {
-    public abstract init(poolManager: any, levelSettings: any): void;
-    /* public abstract getSizeMatrix(): cc.Size; */
-    public abstract initGrid: (cellsMatrixSize: cc.Size) => void;
-    public abstract setupCellToMatrix(row: number, col: number, cell: any): void;
+    public abstract onInitGrid: (cellsMatrixSize: cc.Size) => void;
+    public abstract init(): void;    
+    public abstract setupCellToMatrix(row: number, col: number, cell: CellBase): void;
+    public abstract cellClick(cell: CellBase): void;
 }

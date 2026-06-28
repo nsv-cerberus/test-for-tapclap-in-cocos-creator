@@ -1,28 +1,52 @@
-const {ccclass, property, menu} = cc._decorator;
+const { ccclass, property, menu} = cc._decorator;
+
+import SceneContext from "../../../scene-context-installer/SceneContext";
+import CellsMatrixControllerBase from "../../../scene-context-installer/cells-matrix-controller/CellsMatrixControllerBase";
+import CellBase from "./CellBase";
+import ElementBase from "./elements/ElementBase";
 
 @ccclass
 @menu("Level/Grid/Cell")
-export default class Cell extends cc.Component {
+export default class Cell extends CellBase {
     
     @property(cc.Node)
     private container: cc.Node = null;
 
-    onLoad() {
-        cc.log("Cell: onLoad");
+    private element: ElementBase = null;
+    private row: number = -1;
+    private col: number = -1;
+
+    public setPositionInMatrix(row: number, col: number): CellBase {
+        this.row = row;
+        this.col = col;
+        return this;
+    }   
+
+    public getPositionInMatrix(): { row: number, col: number } {
+        return { 
+            row: this.row,
+            col: this.col 
+        };
     }
 
-    public click(): void {
-        cc.log("Cell: click: " + this.node.name);
+    public getElement(): ElementBase {
+        return this.element;
     }
 
-    private addElement(element: Element): void {
-        /* element.node.parent = this.container; */
+    private click(): void {
+        SceneContext.get(CellsMatrixControllerBase).cellClick(this);
     }
 
-    private removeElement(element: Element): void {
-        /* if (element.node.parent === this.container) {
-            element.node.parent = null;
-        } */
+    public addElement(element: ElementBase): void {
+        element.node.parent = this.container;
+        this.element = element;
+    }
+
+    public removeElement(element: ElementBase): void {
+        if (this.element === element) {
+            this.element.node.parent = null;
+            this.element = null;
+        }
     }
     
 }
