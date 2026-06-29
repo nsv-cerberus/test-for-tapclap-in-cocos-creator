@@ -1,7 +1,7 @@
 const {ccclass, property} = cc._decorator;
 
 import SceneContext from "../../scene-context-installer/SceneContext";
-import CellsMatrixControllerBase from "../../scene-context-installer/cells-matrix-controller/CellsMatrixControllerBase";
+import GameplayControllerBase from "../../scene-context-installer/gameplay-controller/GameplayControllerBase";
 
 @ccclass
 export default class BlockInputLayer extends cc.Component {
@@ -15,12 +15,12 @@ export default class BlockInputLayer extends cc.Component {
         
         this.deactivate();
 
-        const cellsMatrixController = SceneContext.get(CellsMatrixControllerBase);
-        cellsMatrixController.onBlockInput = this.activate.bind(this);
-        cellsMatrixController.onUnblockInput = this.deactivate.bind(this);
+        const gameplayController = SceneContext.get(GameplayControllerBase);
+        gameplayController.onBlockInput = this.activate.bind(this);
+        gameplayController.onUnblockInput = this.deactivate.bind(this);
     }
 
-    activate() {
+    activate() {        
         this.blockInputLayer.node.active = true;
     }
 

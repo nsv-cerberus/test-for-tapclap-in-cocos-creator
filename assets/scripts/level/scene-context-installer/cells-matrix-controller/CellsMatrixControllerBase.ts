@@ -5,6 +5,4 @@ export default abstract class CellsMatrixControllerBase extends cc.Component {
     public abstract setupCellToMatrix(row: number, col: number, cell: CellBase): void;
     public abstract cellClick(cell: CellBase): void;
     public abstract onInitGrid: (cellsMatrixSize: cc.Size) => void;
-    public abstract onBlockInput: () => void;
-    public abstract onUnblockInput: () => void;
 }

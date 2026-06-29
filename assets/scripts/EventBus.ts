@@ -5,6 +5,10 @@ export enum LevelEvent {
 
 export enum GameplayEvent {
     NewGame = "NewGame",
+    StepsUpdated = "StepsUpdated",
+    ScoresUpdated = "ScoresUpdated",
+    GameOver = "GameOver",
+    Won = "Won",
 }
 
 export type EventType = LevelEvent | GameplayEvent;

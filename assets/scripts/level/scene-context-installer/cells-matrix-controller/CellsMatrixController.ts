@@ -4,8 +4,8 @@ import EventBus, { LevelEvent, GameplayEvent } from "../../../EventBus";
 import SceneContext from "../SceneContext";
 
 import CellsMatrixControllerBase from "./CellsMatrixControllerBase";
+import GameplayControllerBase from "../gameplay-controller/GameplayControllerBase";
 import CellBase from "../../gameplay-field/grid/cell/CellBase";
-
 import LevelSettings from "../level-settings/LevelSettings";
 
 import ICellsMatrix from "./cells-matrix/ICellsMatrix";
@@ -26,6 +26,9 @@ import SpawnService from "./spawn-service/SpawnService";
 import IMixElementsService from "./mix-elements-service/IMixElementsService";
 import MixElementsService from "./mix-elements-service/MixElementsService";
 
+import IAvailableMovesService from "./available-moves-service/IAvailableMovesService";
+import AvailableMovesService from "./available-moves-service/AvailableMovesService";
+
 @ccclass
 @menu("Level/Scene Context Installer/Controllers/Cells Matrix Controller")
 export default class CellsMatrixController extends CellsMatrixControllerBase {
@@ -36,10 +39,13 @@ export default class CellsMatrixController extends CellsMatrixControllerBase {
     private gravityService: IGravityService;
     private spawnService: ISpawnService;
     private mixElementsService: IMixElementsService;
+    private availableMovesService: IAvailableMovesService;
+
+    public onInitGrid: (cellsMatrixSize: cc.Size) => void = null;
     
     onLoad() {
         EventBus.on(LevelEvent.LevelSettingsReady, this.createMatrix, this);
-        EventBus.on(GameplayEvent.NewGame, this.spawnTails, this);
+        EventBus.on(GameplayEvent.NewGame, this.onNewGame, this);
     }
 
     public init(): void {
@@ -49,6 +55,7 @@ export default class CellsMatrixController extends CellsMatrixControllerBase {
         this.spawnService = new SpawnService();
         this.mixElementsService = new MixElementsService();
         this.mixElementsService.init(this.cellsMatrix.getMatrix());
+        this.availableMovesService = new AvailableMovesService(this.cellsMatrix, this.chainCollectorService);
     }   
 
     private createMatrix(): void {
@@ -71,28 +78,62 @@ export default class CellsMatrixController extends CellsMatrixControllerBase {
         this.cellsMatrix.setupCell(row, col, cell);
     }
 
+    public async cellClick(cell: CellBase): Promise<void> {
+        const levelSettings = SceneContext.get(LevelSettings);
+        const chains = this.chainCollectorService.collectChains(cell);
+        const chainCellsCount = this.getChainCellsCount(chains);
+
+        if (chainCellsCount < levelSettings.getMinTiles()) {
+            return;
+        }
+
+        const gameplayController = SceneContext.get(GameplayControllerBase);
+
+        gameplayController.startMove(chainCellsCount);
+
+        await this.destroyFallAndSpawn(chains);
+
+        gameplayController.finishMove(
+            this.availableMovesService.hasAvailableMoves(levelSettings.getMinTiles())
+        );
+    }
+
+    private async destroyFallAndSpawn(chains: CellBase[][]): Promise<void> {
+        const emptyCells = await this.elementsDestroyService.destroyCellsElements(chains);
+
+        if (emptyCells.length < 1) {
+            return;
+        }
+
+        await this.gravityService.fall(emptyCells);
+        this.spawnTails();
+    }
+
     private spawnTails(): void {
         this.spawnService.spawnTails(this.cellsMatrix.getEmptyCells());
     }
 
-    public async cellClick(cell: CellBase): Promise<void> {
-        this.onBlockInput();
-        const chains = this.chainCollectorService.collectChains(cell);
-        const emptyCells = await this.elementsDestroyService.destroyCellsElements(chains);
-        await this.gravityService.fall(emptyCells);
+    private onNewGame(): void {
         this.spawnTails();
-        this.onUnblockInput();
     }
 
     private async mixElements(): Promise<void> {
-        this.onBlockInput();
         await this.mixElementsService.mix();
-        this.onUnblockInput();
     }
 
-    public onInitGrid: (cellsMatrixSize: cc.Size) => void = null;
-    public onBlockInput: () => void = null;
-    public onUnblockInput: () => void = null;
+    private getChainCellsCount(chains: CellBase[][]): number {
+        let count = 0;
+
+        for (const chain of chains) {
+            if (!chain) {
+                continue;
+            }
+
+            count += chain.length;
+        }
+
+        return count;
+    }
 
     onDestroy() {
         EventBus.targetOff(this);
