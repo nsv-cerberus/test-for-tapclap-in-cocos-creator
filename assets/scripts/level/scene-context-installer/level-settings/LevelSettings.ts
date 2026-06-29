@@ -1,4 +1,6 @@
 import EventBus, { LevelEvent } from "../../../EventBus";
+import ILevelSettingsLoadService from "./level-settings-load-service/ILevelSettingsLoadService";
+import LevelSettingsLoadService from "./level-settings-load-service/LevelSettingsLoadService";
 
 const {ccclass, menu} = cc._decorator;
 
@@ -7,7 +9,10 @@ export type LevelSettingsData = {
     rows: number;
     minScores: number;
     maxSteps: number;
+    tileScore: number;
+    minTiles: number;
 };
+
 
 @ccclass
 @menu("Level/Scene Context Installer/Level Settings")
@@ -17,25 +22,18 @@ export default class LevelSettings extends cc.Component {
     private rows: number = 2;
     private minScores: number = 20;
     private maxSteps: number = 10;
+    private tileScore: number = 1;
+    private minTiles: number = 3;
+
+    private loadService: ILevelSettingsLoadService = new LevelSettingsLoadService();
 
     public async init() {
-        const asset = await this.loadLevelSettings();
-        this.setSettingsValue(asset.json as LevelSettingsData);
+        const data = await this.loadService.load();
+        this.setSettingsValue(data);
     }
 
-    private async loadLevelSettings(): Promise<cc.JsonAsset> {
-        return await new Promise((resolve, reject) => {
-            cc.resources.load("level/levelSettings", cc.JsonAsset, (err: Error, asset: cc.JsonAsset) => {
-                    if (err) {
-                        reject(err);
-                        return;
-                    }
-
-                    resolve(asset);
-                    cc.warn("JSON: ", JSON.stringify(asset.json, null, 2));
-                }
-            );
-        });
+    public setLoadService(loadService: ILevelSettingsLoadService): void {
+        this.loadService = loadService;
     }
 
     private setSettingsValue(value: LevelSettingsData): void {
@@ -43,6 +41,8 @@ export default class LevelSettings extends cc.Component {
         this.rows = value.rows;
         this.minScores = value.minScores;
         this.maxSteps = value.maxSteps;
+        this.tileScore = value.tileScore;
+        this.minTiles = value.minTiles;
 
         EventBus.emit(LevelEvent.LevelSettingsReady, this);
     }
@@ -61,6 +61,14 @@ export default class LevelSettings extends cc.Component {
 
     public getMaxSteps(): number {
         return this.maxSteps;
+    }
+
+    public getTileScore(): number {
+        return this.tileScore;
+    }
+
+    public getMinTiles(): number {
+        return this.minTiles;
     }
 
 }

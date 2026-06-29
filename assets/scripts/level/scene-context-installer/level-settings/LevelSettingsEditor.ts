@@ -2,11 +2,8 @@ const {ccclass, property, menu} = cc._decorator;
 
 import EditorBase from "../../../base/EditorBase";
 import { LevelSettingsData } from "./LevelSettings";
-
-declare const require: any;
-declare const Editor: any;
-const fs = require("fs");
-const path = require("path");
+import ILevelSettingsSaveService from "./level-settings-save-service/ILevelSettingsSaveService";
+import EditorLevelSettingsSaveService from "./level-settings-save-service/LevelSettingsSaveService";
 
 @ccclass
 @menu("Level/Scene Context Installer/Editors/Level Settings Editor")
@@ -14,17 +11,17 @@ export default class LevelSettingsEditor extends EditorBase {
 
     @property({
         type: cc.Integer,
-        min: 2,
+        min: 3,
         max: 9,
     })
-    private cols: number = 2;
+    private cols: number = 3;
 
     @property({
         type: cc.Integer,
-        min: 2,
+        min: 3,
         max: 10,
     })
-    private rows: number = 2;
+    private rows: number = 3;
 
     @property({
         type: cc.Integer,
@@ -38,13 +35,26 @@ export default class LevelSettingsEditor extends EditorBase {
     })
     private maxSteps: number = 10;
 
+    @property({
+        type: cc.Integer,
+        min: 1,
+    })
+    private tileScore: number = 1;
+
+    @property({
+        type: cc.Integer,
+        min: 3,
+    })
+    private minTiles: number = 3;
+
     private lastCols: number;
     private lastRows: number;
     private lastMinScores: number;
     private lastMaxSteps: number;
+    private lastTileScore: number;
+    private lastMinTiles: number;
 
-    private data: LevelSettingsData;
-    private lastJson: string = "";
+    private saveService: ILevelSettingsSaveService = new EditorLevelSettingsSaveService();
 
     protected update(): void {
         if (!this.hasChanged()) {
@@ -60,7 +70,9 @@ export default class LevelSettingsEditor extends EditorBase {
             this.cols !== this.lastCols ||
             this.rows !== this.lastRows ||
             this.minScores !== this.lastMinScores ||
-            this.maxSteps !== this.lastMaxSteps
+            this.maxSteps !== this.lastMaxSteps ||
+            this.tileScore !== this.lastTileScore ||
+            this.minTiles !== this.lastMinTiles
         );
     }
 
@@ -69,39 +81,25 @@ export default class LevelSettingsEditor extends EditorBase {
         this.lastRows = this.rows;
         this.lastMinScores = this.minScores;
         this.lastMaxSteps = this.maxSteps;
+        this.lastTileScore = this.tileScore;
+        this.lastMinTiles = this.minTiles;
     }
 
     private saveLevelSettings(): void {
-        this.data = {
+        const data: LevelSettingsData = {
             cols: this.cols,
             rows: this.rows,
             minScores: this.minScores,
             maxSteps: this.maxSteps,
+            tileScore: this.tileScore,
+            minTiles: this.minTiles,
         };
 
-        const json = JSON.stringify(this.data, null, 2);
-
-        if (json === this.lastJson) {
-            return;
-        }
-
-        this.lastJson = json;
-        this.saveLevelJson(json);
+        this.saveService.save(data);
     }
 
-    private saveLevelJson(json: string): void {
-        if (!CC_EDITOR) {
-            return;
-        }
-
-        const filePath = path.join(Editor.Project.path, "assets/resources/level/levelSettings.json");
-
-        fs.mkdirSync(path.dirname(filePath), { recursive: true });
-        fs.writeFileSync(filePath, json, "utf8");
-        
-        Editor.assetdb.refresh("db://assets/resources/level/levelSettings.json");
-
-        cc.log("Level settings saved!");
+    public setSaveService(saveService: ILevelSettingsSaveService): void {
+        this.saveService = saveService;
     }
 
     public getColsValue(): number {
