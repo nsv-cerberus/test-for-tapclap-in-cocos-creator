@@ -27,8 +27,6 @@ import SpawnService from "./spawn-service/SpawnService";
 @menu("Level/Scene Context Installer/Controllers/Cells Matrix Controller")
 export default class CellsMatrixController extends CellsMatrixControllerBase {
 
-    public onInitGrid: (cellsMatrixSize: cc.Size) => void = null;
-    
     private cellsMatrix: ICellsMatrix;
     private chainCollectorService: IChainCollectorService;
     private elementsDestroyService: IElementsDestroyService;
@@ -65,10 +63,17 @@ export default class CellsMatrixController extends CellsMatrixControllerBase {
     }
 
     public async cellClick(cell: CellBase): Promise<void> {
+        this.onBlockInput();
         const chains = this.chainCollectorService.collectChains(cell);
         await this.elementsDestroyService.destroyCellsElements(chains);
         await this.gravityService.fall(this.cellsMatrix.getEmptyCells());
+        this.spawnTails();
+        this.onUnblockInput();
     }
+
+    public onInitGrid: (cellsMatrixSize: cc.Size) => void = null;
+    public onBlockInput: () => void = null;
+    public onUnblockInput: () => void = null;
 
     onDestroy() {
         EventBus.targetOff(this);
