@@ -3,7 +3,7 @@ const { ccclass, property, menu } = cc._decorator;
 import PrefabsStoreBase from "./prefabs-store/PrefabsStoreBase";
 
 @ccclass
-@menu("Level/Scene Context Installer/Controllers/Object Pool Manager Controller")
+@menu("Level/Scene Context Installer/Object Pool Manager/Object Pool Manager")
 export default class ObjectPoolManager extends cc.Component {
 
     @property(PrefabsStoreBase)
@@ -33,7 +33,11 @@ export default class ObjectPoolManager extends cc.Component {
         this.pools.delete(key);
     }
 
-    public get<T extends cc.Component>(componentClass: any, poolClass: any = componentClass): T {
+    public get<T extends cc.Component>(
+        componentClass: any,
+        poolClass: any = componentClass,
+        activate: boolean = true
+    ): T {
 
         if (!componentClass) {
             cc.error("ObjectPoolManager: Component class is not assigned!");
@@ -58,7 +62,7 @@ export default class ObjectPoolManager extends cc.Component {
             ? pool.get()
             : cc.instantiate(prefab);
 
-        node.active = true;
+        node.active = activate;
 
         return node.getComponent(componentClass) as T;
     }

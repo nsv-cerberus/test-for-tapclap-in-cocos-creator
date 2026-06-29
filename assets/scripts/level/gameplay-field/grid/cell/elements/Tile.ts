@@ -1,4 +1,4 @@
-const {ccclass, property} = cc._decorator;
+const {ccclass, property, menu} = cc._decorator;
 
 import ElementBase from "./ElementBase";
 
@@ -11,6 +11,7 @@ export enum TileType {
 }
 
 @ccclass
+@menu("Level/Gameplay Field/Grid/Elements/Tile")
 export default class Tile extends ElementBase {
 
     private type: TileType = TileType.Blue;
@@ -31,8 +32,16 @@ export default class Tile extends ElementBase {
     private purple: cc.Sprite = null;
 
     onEnable() {
+        this.resetState();
         this.defineRandomeType();
         this.resAnimation();
+    }
+
+    private resetState(): void {
+        cc.Tween.stopAllByTarget(this.node);
+        this.node.opacity = 255;
+        this.node.scale = 1;
+        this.node.angle = 0;
     }
 
     private defineRandomeType() {
@@ -110,14 +119,12 @@ export default class Tile extends ElementBase {
     public destroyAnimation(delay: number = 0): Promise<void> {
         return new Promise<void>((resolve) => {
             cc.Tween.stopAllByTarget(this.node);
+            this.node.opacity = 255;
 
             cc.tween(this.node)
                 .delay(delay)
-                .to(0.12, { opacity: 0, scale: 0 }, { easing: "quadIn" })
+                .to(0.28, { scale: 0 }, { easing: "sineIn" })
                 .call(() => {
-                    this.node.opacity = 255;
-                    this.node.scale = 1;
-                    this.node.angle = 0;
                     resolve();
                 })
                 .start();

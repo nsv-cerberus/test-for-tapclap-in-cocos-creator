@@ -6,7 +6,7 @@ import ILevelSettingsSaveService from "./level-settings-save-service/ILevelSetti
 import EditorLevelSettingsSaveService from "./level-settings-save-service/LevelSettingsSaveService";
 
 @ccclass
-@menu("Level/Scene Context Installer/Editors/Level Settings Editor")
+@menu("Level/Scene Context Installer/Level Settings/Level Settings Editor")
 export default class LevelSettingsEditor extends EditorBase {
     
     @property({
@@ -19,7 +19,7 @@ export default class LevelSettingsEditor extends EditorBase {
     @property({
         type: cc.Integer,
         min: 3,
-        max: 10,
+        max: 9,
     })
     private rows: number = 3;
 
@@ -47,12 +47,19 @@ export default class LevelSettingsEditor extends EditorBase {
     })
     private minTiles: number = 3;
 
+    @property({
+        type: cc.Integer,
+        min: 3,
+    })
+    private mixBoosterCount: number = 3;
+
     private lastCols: number;
     private lastRows: number;
     private lastMinScores: number;
     private lastMaxSteps: number;
     private lastTileScore: number;
     private lastMinTiles: number;
+    private lastMixBoosterCount: number;
 
     private saveService: ILevelSettingsSaveService = new EditorLevelSettingsSaveService();
 
@@ -72,7 +79,8 @@ export default class LevelSettingsEditor extends EditorBase {
             this.minScores !== this.lastMinScores ||
             this.maxSteps !== this.lastMaxSteps ||
             this.tileScore !== this.lastTileScore ||
-            this.minTiles !== this.lastMinTiles
+            this.minTiles !== this.lastMinTiles ||
+            this.mixBoosterCount !== this.lastMixBoosterCount
         );
     }
 
@@ -83,6 +91,7 @@ export default class LevelSettingsEditor extends EditorBase {
         this.lastMaxSteps = this.maxSteps;
         this.lastTileScore = this.tileScore;
         this.lastMinTiles = this.minTiles;
+        this.lastMixBoosterCount = this.mixBoosterCount;
     }
 
     private saveLevelSettings(): void {
@@ -93,6 +102,7 @@ export default class LevelSettingsEditor extends EditorBase {
             maxSteps: this.maxSteps,
             tileScore: this.tileScore,
             minTiles: this.minTiles,
+            mixBoosterCount: this.mixBoosterCount,
         };
 
         this.saveService.save(data);

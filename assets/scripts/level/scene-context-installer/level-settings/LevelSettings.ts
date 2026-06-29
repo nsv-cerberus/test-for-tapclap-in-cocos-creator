@@ -11,11 +11,12 @@ export type LevelSettingsData = {
     maxSteps: number;
     tileScore: number;
     minTiles: number;
+    mixBoosterCount: number;
 };
 
 
 @ccclass
-@menu("Level/Scene Context Installer/Level Settings")
+@menu("Level/Scene Context Installer/Level Settings/Level Settings")
 export default class LevelSettings extends cc.Component {
     
     private cols: number = 2;
@@ -24,6 +25,7 @@ export default class LevelSettings extends cc.Component {
     private maxSteps: number = 10;
     private tileScore: number = 1;
     private minTiles: number = 3;
+    private mixBoosterCount: number = 0;
 
     private loadService: ILevelSettingsLoadService = new LevelSettingsLoadService();
 
@@ -43,6 +45,7 @@ export default class LevelSettings extends cc.Component {
         this.maxSteps = value.maxSteps;
         this.tileScore = value.tileScore;
         this.minTiles = value.minTiles;
+        this.mixBoosterCount = value.mixBoosterCount || 0;
 
         EventBus.emit(LevelEvent.LevelSettingsReady, this);
     }
@@ -69,6 +72,10 @@ export default class LevelSettings extends cc.Component {
 
     public getMinTiles(): number {
         return this.minTiles;
+    }
+
+    public getMixBoosterCount(): number {
+        return this.mixBoosterCount;
     }
 
 }

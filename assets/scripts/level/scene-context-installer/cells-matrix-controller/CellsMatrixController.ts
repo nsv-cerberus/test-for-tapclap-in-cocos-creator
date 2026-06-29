@@ -30,7 +30,7 @@ import IAvailableMovesService from "./available-moves-service/IAvailableMovesSer
 import AvailableMovesService from "./available-moves-service/AvailableMovesService";
 
 @ccclass
-@menu("Level/Scene Context Installer/Controllers/Cells Matrix Controller")
+@menu("Level/Scene Context Installer/Cells Matrix Controller/Cells Matrix Controller")
 export default class CellsMatrixController extends CellsMatrixControllerBase {
 
     private cellsMatrix: ICellsMatrix;
@@ -117,7 +117,7 @@ export default class CellsMatrixController extends CellsMatrixControllerBase {
         this.spawnTails();
     }
 
-    private async mixElements(): Promise<void> {
+    public async mix(): Promise<void> {
         await this.mixElementsService.mix();
     }
 

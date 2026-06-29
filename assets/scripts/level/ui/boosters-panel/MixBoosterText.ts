@@ -1,4 +1,4 @@
-const {ccclass, requireComponent} = cc._decorator;
+const {ccclass, requireComponent, menu} = cc._decorator;
 
 import TextBase from "../../../base/TextBase";
 import EventBus, { GameplayEvent } from "../../../EventBus";
@@ -6,26 +6,24 @@ import SceneContext from "../../scene-context-installer/SceneContext";
 import GameplayControllerBase from "../../scene-context-installer/gameplay-controller/GameplayControllerBase";
 
 @ccclass
+@menu("Level/UI/Boosters Panel/Mix Booster Text")
 @requireComponent(cc.RichText)
-export default class ScoresText extends TextBase {
+export default class MixBoosterText extends TextBase {
 
     onLoad() {
         super.onLoad();
-        EventBus.on(GameplayEvent.ScoresUpdated, this.onScoresUpdated, this);
-        this.updateCurrentScores();
+        EventBus.on(GameplayEvent.MixBoostersUpdated, this.onMixBoostersUpdated, this);
+        this.updateCurrentMixBoosters();
     }
 
-    private onScoresUpdated(scores: number, minScores: number): void {
-        this.setText(`${scores}/${minScores}`);
+    private onMixBoostersUpdated(count: number): void {
+        this.setText(count.toString());
     }
 
-    private updateCurrentScores(): void {
+    private updateCurrentMixBoosters(): void {
         try {
             const gameplayController = SceneContext.get(GameplayControllerBase);
-            this.onScoresUpdated(
-                gameplayController.getScores(),
-                gameplayController.getMinScores()
-            );
+            this.onMixBoostersUpdated(gameplayController.getMixBoosterCount());
         } catch (error) {
             return;
         }

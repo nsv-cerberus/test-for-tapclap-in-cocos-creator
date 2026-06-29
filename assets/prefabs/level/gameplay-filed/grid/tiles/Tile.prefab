@@ -37,9 +37,6 @@
     "_components": [
       {
         "__id__": 17
-      },
-      {
-        "__id__": 18
       }
     ],
     "_prefab": {
@@ -650,16 +647,6 @@
     "purple": {
       "__id__": 15
     },
-    "_id": ""
-  },
-  {
-    "__type__": "ed6f36Z46FJ2oaveFnSAGn7",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 1
-    },
-    "_enabled": true,
     "_id": ""
   },
   {

@@ -1,6 +1,7 @@
-const {ccclass} = cc._decorator;
+const {ccclass, menu} = cc._decorator;
 
 @ccclass
+@menu("Level/Gameplay Field/Gameplay Field")
 export default class GameplayField extends cc.Component {
 
     public resize(rows: number, cols: number, cellSize: cc.Size): void {

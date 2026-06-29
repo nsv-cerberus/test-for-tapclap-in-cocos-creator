@@ -1,4 +1,4 @@
-const {ccclass, requireComponent} = cc._decorator;
+const {ccclass, requireComponent, menu} = cc._decorator;
 
 import TextBase from "../../../base/TextBase";
 import EventBus, { GameplayEvent } from "../../../EventBus";
@@ -6,6 +6,7 @@ import SceneContext from "../../scene-context-installer/SceneContext";
 import GameplayControllerBase from "../../scene-context-installer/gameplay-controller/GameplayControllerBase";
 
 @ccclass
+@menu("Level/UI/Statistics Panel/Steps Text")
 @requireComponent(cc.RichText)
 export default class StepsText extends TextBase {
 

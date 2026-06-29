@@ -16,9 +16,11 @@ export default class SpawnService implements ISpawnService {
 
     public spawnTails(emptyCells: CellBase[]): void {
         for (const emptyCell of emptyCells) {
-            const tail = this.poolManager.get(Tile, ElementBase);
+            const tail = this.poolManager.get(Tile, ElementBase, false);
+
             if (tail) {
                 emptyCell.addElement(tail as Tile);
+                tail.node.active = true;
             } else {
                 cc.error("No available tails in the pool.");
             }

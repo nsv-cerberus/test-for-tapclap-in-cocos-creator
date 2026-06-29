@@ -8,13 +8,16 @@ import IStepsManager from "./steps-manager/IStepsManager";
 import StepsManager from "./steps-manager/StepsManager";
 import IScoresManager from "./scores-manager/IScoresManager";
 import ScoresManager from "./scores-manager/ScoresManager";
+import IMixBoosterManager from "./mix-booster-manager/IMixBoosterManager";
+import MixBoosterManager from "./mix-booster-manager/MixBoosterManager";
 
 @ccclass
-@menu("Level/Scene Context Installer/Controllers/Gameplay Controller")
+@menu("Level/Scene Context Installer/Gameplay Controller/Gameplay Controller")
 export default class GameplayController extends GameplayControllerBase {
 
     private stepsManager: IStepsManager = null;
     private scoresManager: IScoresManager = null;
+    private mixBoosterManager: IMixBoosterManager = null;
     private state: GameplayState = GameplayState.Playing;
 
     onLoad() {
@@ -26,18 +29,20 @@ export default class GameplayController extends GameplayControllerBase {
 
         this.stepsManager = new StepsManager(levelSettings.getMaxSteps());
         this.scoresManager = new ScoresManager(levelSettings.getMinScores(), levelSettings.getTileScore());
+        this.mixBoosterManager = new MixBoosterManager(levelSettings.getMixBoosterCount());
         this.startNewGame();
 
         EventBus.emit(GameplayEvent.NewGame, this);
     }
 
     private onNewGame(): void {
-        if (!this.stepsManager || !this.scoresManager) {
+        if (!this.stepsManager || !this.scoresManager || !this.mixBoosterManager) {
             return;
         }
 
         this.stepsManager.reset();
         this.scoresManager.reset();
+        this.mixBoosterManager.reset();
         this.startNewGame();
 
         EventBus.emit(GameplayEvent.NewGame, this);
@@ -64,7 +69,7 @@ export default class GameplayController extends GameplayControllerBase {
             return;
         }
 
-        if (this.scoresManager.isEnoughScores()) {
+        if (this.hasEnoughScores()) {
             this.complete(GameplayState.Won, GameplayEvent.Won);
             return;
         }
@@ -101,6 +106,23 @@ export default class GameplayController extends GameplayControllerBase {
         return this.scoresManager ? this.scoresManager.getMinScores() : 0;
     }
 
+    public useMixBooster(): boolean {
+        if (!this.mixBoosterManager || !this.isPlaying()) {
+            return false;
+        }
+
+        if (!this.mixBoosterManager.use()) {
+            return false;
+        }
+
+        this.emitMixBoostersUpdated();
+        return true;
+    }
+
+    public getMixBoosterCount(): number {
+        return this.mixBoosterManager ? this.mixBoosterManager.getCount() : 0;
+    }
+
     private startNewGame(): void {
         this.state = GameplayState.Playing;
         this.unblockInput();
@@ -124,9 +146,14 @@ export default class GameplayController extends GameplayControllerBase {
         EventBus.emit(event, this);
     }
 
+    private hasEnoughScores(): boolean {
+        return this.scoresManager.getScores() >= this.scoresManager.getMinScores();
+    }
+
     private emitStatisticsUpdated(): void {
         this.emitStepsUpdated();
         this.emitScoresUpdated();
+        this.emitMixBoostersUpdated();
     }
 
     private emitStepsUpdated(): void {
@@ -142,6 +169,13 @@ export default class GameplayController extends GameplayControllerBase {
             GameplayEvent.ScoresUpdated,
             this.scoresManager.getScores(),
             this.scoresManager.getMinScores()
+        );
+    }
+
+    private emitMixBoostersUpdated(): void {
+        EventBus.emit(
+            GameplayEvent.MixBoostersUpdated,
+            this.mixBoosterManager.getCount()
         );
     }
 

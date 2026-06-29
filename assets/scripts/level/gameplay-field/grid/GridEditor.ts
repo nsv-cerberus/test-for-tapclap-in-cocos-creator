@@ -1,10 +1,11 @@
-const {ccclass, property, requireComponent} = cc._decorator;
+const {ccclass, property, requireComponent, menu} = cc._decorator;
 
 import EditorBase from "../../../base/EditorBase";
 import LevelSettingsEditor from "../../scene-context-installer/level-settings/LevelSettingsEditor";
 import Grid from "./Grid";
 
 @ccclass
+@menu("Level/Gameplay Field/Grid/Grid Editor")
 @requireComponent(Grid)
 export default class GridEditor extends EditorBase {
     
@@ -36,7 +37,7 @@ export default class GridEditor extends EditorBase {
                 return;
             }
 
-            this.grid.createCells(this.levelSettings.getMatrixSize());
+            this.grid.createCells(this.levelSettings.getMatrixSize(), true);
 
             this.saveState();                
             cc.log("GridEditor: Rebuilding grid...");

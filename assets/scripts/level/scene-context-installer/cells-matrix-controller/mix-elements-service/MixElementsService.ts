@@ -26,14 +26,16 @@ export default class MixElementsService implements IMixElementsService {
         const shuffledElements = this.shuffleElements(mixItems.map(item => item.element));
         this.resolveSamePositions(mixItems, shuffledElements);
 
+        const moves = mixItems.map((item, index) => {
+            const element = shuffledElements[index];
+            return this.moveElementToCell(element, item.cell, this.getOriginalWorldPosition(mixItems, element));
+        });
+
         for (const item of mixItems) {
             item.cell.removeElement(item.element);
         }
 
-        await Promise.all(mixItems.map((item, index) => {
-            const element = shuffledElements[index];
-            return this.moveElementToCell(element, item.cell, this.getOriginalWorldPosition(mixItems, element));
-        }));
+        await Promise.all(moves);
     }
 
     private collectMixItems(): MixItem[] {

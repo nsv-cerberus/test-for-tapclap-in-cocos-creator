@@ -1,9 +1,10 @@
-const {ccclass, property} = cc._decorator;
+const {ccclass, property, menu} = cc._decorator;
 
 import SceneContext from "../../scene-context-installer/SceneContext";
 import GameplayControllerBase from "../../scene-context-installer/gameplay-controller/GameplayControllerBase";
 
 @ccclass
+@menu("Level/Gameplay Field/Block Input Layer")
 export default class BlockInputLayer extends cc.Component {
     @property(cc.BlockInputEvents)
     private blockInputLayer: cc.BlockInputEvents = null;
@@ -20,11 +21,22 @@ export default class BlockInputLayer extends cc.Component {
         gameplayController.onUnblockInput = this.deactivate.bind(this);
     }
 
-    activate() {        
+    activate() {
+        cc.log("BlockInputLayer: activate");
         this.blockInputLayer.node.active = true;
     }
 
     deactivate() {
+        cc.log("BlockInputLayer: deactivate");
         this.blockInputLayer.node.active = false;
+    }
+
+    onDestroy() {
+        const gameplayController = SceneContext.get(GameplayControllerBase);
+        
+        if (gameplayController) {
+            gameplayController.onBlockInput = null;
+            gameplayController.onUnblockInput = null;
+        }
     }
 }

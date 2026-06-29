@@ -5,7 +5,7 @@ import Cell from "../../../gameplay-field/grid/cell/Cell";
 import Tile from "../../../gameplay-field/grid/cell/elements/Tile";
 
 @ccclass
-@menu("Level/Scene Context Installer/Stores/Prefabs Store")
+@menu("Level/Scene Context Installer/Object Pool Manager/Prefabs Store")
 export default class PrefabsStore extends PrefabsStoreBase {
 
     @property(cc.Prefab)

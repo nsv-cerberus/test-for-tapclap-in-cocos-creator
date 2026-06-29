@@ -7,6 +7,7 @@ export enum GameplayEvent {
     NewGame = "NewGame",
     StepsUpdated = "StepsUpdated",
     ScoresUpdated = "ScoresUpdated",
+    MixBoostersUpdated = "MixBoostersUpdated",
     GameOver = "GameOver",
     Won = "Won",
 }

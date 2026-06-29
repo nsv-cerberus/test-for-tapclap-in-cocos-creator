@@ -26,6 +26,7 @@ export class SceneContextInstaller extends cc.Component {
     
     onLoad() {
         cc.log("--- START SCENE CONTEXT INSTALLER ------------------------------------------------------------------");
+        cc.debug.setDisplayStats(false);
 
         this.resolveReferences();
 

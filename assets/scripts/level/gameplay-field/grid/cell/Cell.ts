@@ -6,7 +6,7 @@ import CellBase from "./CellBase";
 import ElementBase from "./elements/ElementBase";
 
 @ccclass
-@menu("Level/Grid/Cell")
+@menu("Level/Gameplay Field/Grid/Cells/Cell")
 export default class Cell extends CellBase {
     
     @property(cc.Node)

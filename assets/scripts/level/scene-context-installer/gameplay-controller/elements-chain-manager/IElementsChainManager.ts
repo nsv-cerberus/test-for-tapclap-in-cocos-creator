@@ -1,22 +1,4 @@
-const {ccclass, property} = cc._decorator;
-
-@ccclass
-export default class NewClass extends cc.Component {
-
-    @property(cc.Label)
-    label: cc.Label = null;
-
-    @property
-    text: string = 'hello';
-
-    // LIFE-CYCLE CALLBACKS:
-
-    // onLoad () {}
-
-    start () {
-
-    }
-
-    // update (dt) {}
-    
+export default interface IElementsChainManager {
+    addElement(element: cc.Node): void;
+    removeElement(element: cc.Node): void;
 }
