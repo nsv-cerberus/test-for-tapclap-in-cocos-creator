@@ -8,7 +8,7 @@ import EditorLevelSettingsSaveService from "./level-settings-save-service/LevelS
 @ccclass
 @menu("Level/Scene Context Installer/Editors/Level Settings Editor")
 export default class LevelSettingsEditor extends EditorBase {
-
+    
     @property({
         type: cc.Integer,
         min: 3,

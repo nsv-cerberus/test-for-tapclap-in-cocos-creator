@@ -113,8 +113,7 @@ export default class Tile extends ElementBase {
 
             cc.tween(this.node)
                 .delay(delay)
-                .to(0.08, { scale: 1.18 }, { easing: "sineOut" })
-                .to(0.14, { opacity: 0, scale: 0.15, angle: this.node.angle + 25 }, { easing: "quadIn" })
+                .to(0.12, { opacity: 0, scale: 0 }, { easing: "quadIn" })
                 .call(() => {
                     this.node.opacity = 255;
                     this.node.scale = 1;

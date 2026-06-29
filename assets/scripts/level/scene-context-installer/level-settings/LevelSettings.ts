@@ -17,7 +17,7 @@ export type LevelSettingsData = {
 @ccclass
 @menu("Level/Scene Context Installer/Level Settings")
 export default class LevelSettings extends cc.Component {
-
+    
     private cols: number = 2;
     private rows: number = 2;
     private minScores: number = 20;

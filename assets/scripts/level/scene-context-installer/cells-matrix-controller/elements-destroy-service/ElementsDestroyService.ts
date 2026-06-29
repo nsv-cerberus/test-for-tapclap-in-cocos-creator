@@ -5,56 +5,40 @@ import CellBase from "../../../gameplay-field/grid/cell/CellBase";
 import ElementBase from "../../../gameplay-field/grid/cell/elements/ElementBase";
 
 export default class ElementsDestroyService implements IElementsDestroyService {
-    private readonly waveStepDelay: number = 0.055;
     private poolManager: ObjectPoolManager;
 
     constructor() {
         this.poolManager = SceneContext.get(ObjectPoolManager);
     }
 
-    public async destroyCellsElements(chainSteps: CellBase[][]): Promise<void> {
-        let animationsCounter = 0;
+    public async destroyCellsElements(chainSteps: CellBase[][]): Promise<CellBase[]> {
+        const destroyAnimations: Promise<CellBase>[] = [];
 
-        return new Promise<void>((resolve) => {
-            const onAnimationComplete = () => {
-                animationsCounter--;
+        for (const cells of chainSteps) {
+            if (!cells) {
+                continue;
+            }
 
-                if (animationsCounter <= 0) {
-                    resolve();
-                }
-            };
+            for (const cell of cells) {
+                const element = cell.getElement();
 
-            for (let step = 0; step < chainSteps.length; step++) {
-                const cells = chainSteps[step];
-
-                if (!cells) {
+                if (!element) {
                     continue;
                 }
 
-                for (const cell of cells) {
-                    const element = cell.getElement();
-
-                    if (!element) {
-                        continue;
-                    }
-
-                    animationsCounter++;
-                    this.destroyCellElement(cell, element, step)
-                        .then(onAnimationComplete);
-                }
+                destroyAnimations.push(this.destroyCellElement(cell, element));
             }
+        }
 
-            if (animationsCounter === 0) {
-                resolve();
-            }
-        });
+        return Promise.all(destroyAnimations);
     }
 
-    private destroyCellElement(cell: CellBase, element: ElementBase, step: number): Promise<void> {
-        return element.destroyAnimation(step * this.waveStepDelay)
+    private destroyCellElement(cell: CellBase, element: ElementBase): Promise<CellBase> {
+        return element.destroyAnimation()
             .then(() => {
                 cell.removeElement(element);
                 this.poolManager.release(ElementBase.name, element.node);
+                return cell;
             });
     }
 }

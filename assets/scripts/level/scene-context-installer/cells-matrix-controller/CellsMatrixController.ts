@@ -23,6 +23,9 @@ import GravityService from "./gravity-service/GravityService";
 import ISpawnService from "./spawn-service/ISpawnService";
 import SpawnService from "./spawn-service/SpawnService";
 
+import IMixElementsService from "./mix-elements-service/IMixElementsService";
+import MixElementsService from "./mix-elements-service/MixElementsService";
+
 @ccclass
 @menu("Level/Scene Context Installer/Controllers/Cells Matrix Controller")
 export default class CellsMatrixController extends CellsMatrixControllerBase {
@@ -32,6 +35,7 @@ export default class CellsMatrixController extends CellsMatrixControllerBase {
     private elementsDestroyService: IElementsDestroyService;
     private gravityService: IGravityService;
     private spawnService: ISpawnService;
+    private mixElementsService: IMixElementsService;
     
     onLoad() {
         EventBus.on(LevelEvent.LevelSettingsReady, this.createMatrix, this);
@@ -43,6 +47,8 @@ export default class CellsMatrixController extends CellsMatrixControllerBase {
         this.gravityService = new GravityService(this.cellsMatrix);
         this.elementsDestroyService = new ElementsDestroyService();
         this.spawnService = new SpawnService();
+        this.mixElementsService = new MixElementsService();
+        this.mixElementsService.init(this.cellsMatrix.getMatrix());
     }   
 
     private createMatrix(): void {
@@ -51,7 +57,14 @@ export default class CellsMatrixController extends CellsMatrixControllerBase {
         const cols = settings.getCols();
 
         this.cellsMatrix = new CellsMatrix(rows, cols);
-        this.onInitGrid(this.cellsMatrix.getSizeMatrix());
+
+        if (this.onInitGrid) {
+            this.onInitGrid(this.cellsMatrix.getSizeMatrix());
+        }
+    }
+
+    public getMatrixSize(): cc.Size {
+        return this.cellsMatrix ? this.cellsMatrix.getSizeMatrix() : null;
     }
 
     public setupCellToMatrix(row: number, col: number, cell: CellBase): void {
@@ -65,9 +78,15 @@ export default class CellsMatrixController extends CellsMatrixControllerBase {
     public async cellClick(cell: CellBase): Promise<void> {
         this.onBlockInput();
         const chains = this.chainCollectorService.collectChains(cell);
-        await this.elementsDestroyService.destroyCellsElements(chains);
-        await this.gravityService.fall(this.cellsMatrix.getEmptyCells());
+        const emptyCells = await this.elementsDestroyService.destroyCellsElements(chains);
+        await this.gravityService.fall(emptyCells);
         this.spawnTails();
+        this.onUnblockInput();
+    }
+
+    private async mixElements(): Promise<void> {
+        this.onBlockInput();
+        await this.mixElementsService.mix();
         this.onUnblockInput();
     }
 

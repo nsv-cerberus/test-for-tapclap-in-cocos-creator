@@ -1,6 +1,6 @@
 {
-  "cols": 5,
-  "rows": 5,
+  "cols": 9,
+  "rows": 10,
   "minScores": 20,
   "maxSteps": 10,
   "tileScore": 1,
