@@ -44,7 +44,10 @@ export default class Cell extends CellBase {
 
     public removeElement(element: ElementBase): void {
         if (this.element === element) {
-            this.element.node.parent = null;
+            if (this.element.node.parent === this.container) {
+                this.element.node.parent = null;
+            }
+
             this.element = null;
         }
     }

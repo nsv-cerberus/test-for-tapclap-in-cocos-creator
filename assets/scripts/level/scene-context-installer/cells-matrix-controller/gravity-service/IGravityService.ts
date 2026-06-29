@@ -1,3 +1,5 @@
+import CellBase from "../../../gameplay-field/grid/cell/CellBase";
+
 export default interface IGravityService {
-    applyGravity(): void;
+    fall(cells: CellBase[]): Promise<void>;
 }

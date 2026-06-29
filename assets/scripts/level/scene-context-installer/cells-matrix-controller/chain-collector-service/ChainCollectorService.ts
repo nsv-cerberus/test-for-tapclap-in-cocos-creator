@@ -12,16 +12,19 @@ export default class ChainCollectorService implements IChainCollectorService {
         this.tilesAlgorithm = new TilesAlgorithm(cellsMatrix);
     }
 
-    public collectChains(cell: CellBase): CellBase[] {
-        const elementType = cell.getElement().getType();
-        
-        switch (elementType.constructor.name) {
-            case "Tile":
-                return this.tilesAlgorithm.collect(cell);
-            default:
-                cc.error("ChainCollectorService: Unsupported element type: " + elementType.constructor.name);
-                return [];
+    public collectChains(cell: CellBase): CellBase[][] {
+        const element = cell.getElement();
+
+        if (!element) {
+            return [];
         }
+
+        if (typeof (element as any).getTileType === "function") {
+            return this.tilesAlgorithm.collect(cell);
+        }
+
+        cc.error("ChainCollectorService: Unsupported element type.");
+        return [];
     }
 
 }

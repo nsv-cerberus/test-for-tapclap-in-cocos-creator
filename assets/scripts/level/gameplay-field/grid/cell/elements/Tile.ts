@@ -32,6 +32,7 @@ export default class Tile extends ElementBase {
 
     onEnable() {
         this.defineRandomeType();
+        this.resAnimation();
     }
 
     private defineRandomeType() {
@@ -92,6 +93,36 @@ export default class Tile extends ElementBase {
 
     public getTileType(): TileType {
         return this.type;
+    }
+
+    public resAnimation(): void {
+        cc.Tween.stopAllByTarget(this.node);
+
+        this.node.opacity = 0;
+        this.node.scale = 0.6;
+
+        cc.tween(this.node)
+            .to(0.12, { opacity: 255, scale: 1.08 }, { easing: "backOut" })
+            .to(0.06, { scale: 1 })
+            .start();
+    }
+
+    public destroyAnimation(delay: number = 0): Promise<void> {
+        return new Promise<void>((resolve) => {
+            cc.Tween.stopAllByTarget(this.node);
+
+            cc.tween(this.node)
+                .delay(delay)
+                .to(0.08, { scale: 1.18 }, { easing: "sineOut" })
+                .to(0.14, { opacity: 0, scale: 0.15, angle: this.node.angle + 25 }, { easing: "quadIn" })
+                .call(() => {
+                    this.node.opacity = 255;
+                    this.node.scale = 1;
+                    this.node.angle = 0;
+                    resolve();
+                })
+                .start();
+        });
     }
     
 }

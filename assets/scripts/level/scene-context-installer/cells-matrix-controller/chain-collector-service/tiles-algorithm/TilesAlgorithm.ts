@@ -12,7 +12,7 @@ export default class TilesAlgorithm implements ITilesAlgorithm {
         this.cellsMatrix = cellsMatrix;
     }
 
-    public collect(cell: CellBase): CellBase[] {
+    public collect(cell: CellBase): CellBase[][] {
         const startElement = cell.getElement();
 
         if (!this.isTile(startElement)) {
@@ -21,21 +21,27 @@ export default class TilesAlgorithm implements ITilesAlgorithm {
 
         const targetType = startElement.getTileType();
 
-        const chain: CellBase[] = [];
+        const chainSteps: CellBase[][] = [];
         const visited = new Set<CellBase>();
-        const queue: CellBase[] = [];
+        const queue: { cell: CellBase, step: number }[] = [];
 
         visited.add(cell);
-        queue.push(cell);
+        queue.push({ cell, step: 0 });
 
         while (queue.length > 0) {
-            const currentCell = queue.shift();
+            const current = queue.shift();
 
-            if (!currentCell) {
+            if (!current) {
                 continue;
             }
 
-            chain.push(currentCell);
+            const currentCell = current.cell;
+
+            if (!chainSteps[current.step]) {
+                chainSteps[current.step] = [];
+            }
+
+            chainSteps[current.step].push(currentCell);
 
             const neighbors = this.cellsMatrix.getNeighbors(currentCell);
 
@@ -55,13 +61,13 @@ export default class TilesAlgorithm implements ITilesAlgorithm {
                 }
 
                 visited.add(neighborCell);
-                queue.push(neighborCell);
+                queue.push({ cell: neighborCell, step: current.step + 1 });
             }
         }
         
-        cc.log("Collected chain length: ", chain.length, " Chain positions: ", chain.map(c => c.getPositionInMatrix()));
+        cc.log("Collected chain steps: ", chainSteps.map(step => step.map(c => c.getPositionInMatrix())));
 
-        return chain;
+        return chainSteps;
     }
 
     private isTile(element: any): element is Tile {

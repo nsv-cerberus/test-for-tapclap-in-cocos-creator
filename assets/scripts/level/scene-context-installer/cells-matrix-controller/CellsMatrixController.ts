@@ -14,6 +14,9 @@ import CellsMatrix from "./cells-matrix/CellsMatrix";
 import IChainCollectorService from "./chain-collector-service/IChainCollectorService";
 import ChainCollectorService from "./chain-collector-service/ChainCollectorService";
 
+import IElementsDestroyService from "./elements-destroy-service/IElementsDestroyService";
+import ElementsDestroyService from "./elements-destroy-service/ElementsDestroyService";
+
 import IGravityService from "./gravity-service/IGravityService";
 import GravityService from "./gravity-service/GravityService";
 
@@ -28,6 +31,7 @@ export default class CellsMatrixController extends CellsMatrixControllerBase {
     
     private cellsMatrix: ICellsMatrix;
     private chainCollectorService: IChainCollectorService;
+    private elementsDestroyService: IElementsDestroyService;
     private gravityService: IGravityService;
     private spawnService: ISpawnService;
     
@@ -39,6 +43,7 @@ export default class CellsMatrixController extends CellsMatrixControllerBase {
     public init(): void {
         this.chainCollectorService = new ChainCollectorService(this.cellsMatrix);
         this.gravityService = new GravityService(this.cellsMatrix);
+        this.elementsDestroyService = new ElementsDestroyService();
         this.spawnService = new SpawnService();
     }   
 
@@ -59,8 +64,10 @@ export default class CellsMatrixController extends CellsMatrixControllerBase {
         this.spawnService.spawnTails(this.cellsMatrix.getEmptyCells());
     }
 
-    public cellClick(cell: CellBase): void {
-        const chain = this.chainCollectorService.collectChains(cell);
+    public async cellClick(cell: CellBase): Promise<void> {
+        const chains = this.chainCollectorService.collectChains(cell);
+        await this.elementsDestroyService.destroyCellsElements(chains);
+        await this.gravityService.fall(this.cellsMatrix.getEmptyCells());
     }
 
     onDestroy() {

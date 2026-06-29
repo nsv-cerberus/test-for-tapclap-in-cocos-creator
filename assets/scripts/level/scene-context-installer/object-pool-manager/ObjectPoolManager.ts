@@ -33,7 +33,7 @@ export default class ObjectPoolManager extends cc.Component {
         this.pools.delete(key);
     }
 
-    public get<T extends cc.Component>(componentClass: any): T {
+    public get<T extends cc.Component>(componentClass: any, poolClass: any = componentClass): T {
 
         if (!componentClass) {
             cc.error("ObjectPoolManager: Component class is not assigned!");
@@ -52,7 +52,7 @@ export default class ObjectPoolManager extends cc.Component {
             return null;
         }
 
-        const pool = this.getOrCreatePool(componentClass.name);
+        const pool = this.getOrCreatePool(this.getPoolKey(poolClass));
 
         const node = pool.size() > 0
             ? pool.get()
@@ -82,6 +82,10 @@ export default class ObjectPoolManager extends cc.Component {
 
         return pool;
     }    
+
+    private getPoolKey(poolClass: any): string {
+        return poolClass && poolClass.name ? poolClass.name : String(poolClass);
+    }
 
     private resolvePrefabsStore(): PrefabsStoreBase {
         if (!this.prefabsStore) {
